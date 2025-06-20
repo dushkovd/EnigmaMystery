@@ -39,6 +39,6 @@ jobs:
           server-dir: /home/enigmamystery/www/staging/
           local-dir: ./dist/
           security: loose
-          clean: true # Deletes files on the server that are not in the build
+          dangerous-clean-slate: true # Deletes files on the server that are not in the build
           # This action deploys the contents of the 'dist' folder to your server.
           # You MUST configure the secrets in your GitHub repository settings. 
