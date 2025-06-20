@@ -1,0 +1,90 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        'display': ['Playfair Display', 'serif'],
+        'body': ['Lora', 'serif'],
+      },
+      colors: {
+        primary: {
+          50: '#FCF5F8',
+          100: '#F9EBF1',
+          200: '#F0CCD9',
+          300: '#E6ADC2',
+          400: '#D36F93',
+          500: '#C03064',
+          600: '#7D1D3F', // main primary
+          700: '#59152D',
+          800: '#3C0E1E',
+          900: '#1E070F',
+        },
+        secondary: {
+          50: '#F0F0F5',
+          100: '#E1E1EB',
+          200: '#C3C3D7',
+          300: '#A5A5C3',
+          400: '#69699B',
+          500: '#2D2D73',
+          600: '#1A1A2E', // main secondary
+          700: '#121221',
+          800: '#0D0D16',
+          900: '#06060B',
+        },
+        accent: {
+          50: '#FBF8EF',
+          100: '#F7F1DF',
+          200: '#EFE4BF',
+          300: '#E6D69F',
+          400: '#D4AF37', // main accent (gold)
+          500: '#B49027',
+          600: '#8A6E1E',
+          700: '#634F15',
+          800: '#42350E',
+          900: '#211A07',
+        },
+        success: {
+          50: '#F0F9F0',
+          100: '#E1F3E1',
+          200: '#C3E7C3',
+          300: '#A4DBA4',
+          400: '#67C367',
+          500: '#2BAB2B',
+          600: '#1F7A1F',
+          700: '#165816',
+          800: '#0E3A0E',
+          900: '#071D07',
+        },
+        warning: {
+          50: '#FFF8E6',
+          100: '#FFF1CC',
+          200: '#FFE299',
+          300: '#FFD466',
+          400: '#FFB800',
+          500: '#CC9200',
+          600: '#996E00',
+          700: '#664900',
+          800: '#332500',
+          900: '#191200',
+        },
+        error: {
+          50: '#FEF0F0',
+          100: '#FEE1E1',
+          200: '#FCC2C2',
+          300: '#FAA4A4',
+          400: '#F66767',
+          500: '#F22A2A',
+          600: '#CF1414',
+          700: '#940F0F',
+          800: '#630A0A',
+          900: '#310505',
+        },
+      },
+      backgroundImage: {
+        'paper-texture': "url('https://images.pexels.com/photos/6649782/pexels-photo-6649782.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1')",
+      },
+    },
+  },
+  plugins: [],
+};

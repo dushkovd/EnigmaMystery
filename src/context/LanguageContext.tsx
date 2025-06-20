@@ -1,0 +1,570 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+type Language = 'en' | 'bg';
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}
+
+const translations: Record<string, Record<string, string>> = {
+  en: {
+    // Navigation
+    'nav.home': 'Home',
+    'nav.shop': 'Shop',
+    'nav.myGames': 'My Games',
+    'nav.signIn': 'Sign In',
+    'nav.cart': 'Cart',
+    'nav.myAccount': 'My Account',
+    'nav.siteName': 'Enigma Mysteries',
+    'nav.english': 'English',
+    'nav.bulgarian': 'Bulgarian',
+    'nav.logout': 'Logout',
+    
+    // Authentication
+    'auth.signIn': 'Sign In',
+    'auth.signUp': 'Sign Up',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.confirmPassword': 'Confirm Password',
+    'auth.name': 'Name',
+    'auth.pleaseSignIn': 'Please sign in to complete your purchase',
+    'auth.emailPlaceholder': 'Enter your email',
+    'auth.passwordPlaceholder': 'Enter your password',
+    'auth.forgotPassword': 'Forgot Password?',
+    'auth.backToLogin': 'Back to Login',
+    'auth.forgotPasswordDesc': 'Enter your email address and we\'ll send you a link to reset your password.',
+    'auth.sendResetEmail': 'Send Reset Email',
+    'auth.emailSent': 'Email Sent!',
+    'auth.emailSentDesc': 'We\'ve sent a password reset link to your email address.',
+    'auth.checkSpam': 'Don\'t forget to check your spam folder.',
+    'auth.resetPassword': 'Reset Password',
+    'auth.resetPasswordDesc': 'Enter your new password below.',
+    'auth.newPassword': 'New Password',
+    'auth.newPasswordPlaceholder': 'Enter new password',
+    'auth.confirmPasswordPlaceholder': 'Confirm new password',
+    'auth.updatePassword': 'Update Password',
+    'auth.signingIn': 'Signing In...',
+    'auth.sendingEmail': 'Sending Email...',
+    'auth.updatingPassword': 'Updating Password...',
+    'auth.invalidCredentials': 'Invalid email or password',
+    'auth.passwordMismatch': 'Passwords do not match',
+    'auth.passwordTooShort': 'Password must be at least 6 characters',
+    'auth.passwordResetSuccess': 'Password reset successfully! You can now sign in with your new password.',
+    'auth.registrationFailed': 'Registration failed. Please try again.',
+    'auth.or': 'or',
+    'auth.switchToRegister': 'Create an account',
+    'auth.switchToLogin': 'Sign in to your account',
+    
+    // Cart
+    'cart.title': 'Shopping Cart',
+    'cart.items': 'Cart Items',
+    'cart.item': 'item',
+    'cart.empty.title': 'Your Cart is Empty',
+    'cart.empty.description': 'Looks like you haven\'t added any mystery games to your cart yet. Browse our collection to get started!',
+    'cart.empty.browseGames': 'Browse Games',
+    'cart.clearAll': 'Clear All',
+    'cart.removeItem': 'Remove item',
+    'cart.each': 'each',
+    'cart.orderSummary': 'Order Summary',
+    'cart.subtotal': 'Subtotal',
+    'cart.tax': 'Tax',
+    'cart.total': 'Total',
+    'cart.proceedToCheckout': 'Proceed to Checkout',
+    'cart.continueShopping': 'Continue Shopping',
+    
+    // Home Page
+    'home.hero.title': 'Host the Perfect',
+    'home.hero.titleHighlight': 'Murder Mystery',
+    'home.hero.titleEnd': 'Night',
+    'home.hero.subtitle': 'Immerse yourself in elaborate mysteries with intricate plots, compelling characters, and unexpected twists.',
+    'home.hero.exploreGames': 'Explore Games',
+    'home.hero.howItWorks': 'How It Works',
+    'home.featured.title': 'Featured Mystery',
+    'home.featured.badge': 'Featured',
+    'home.featured.viewDetails': 'View Details',
+    'home.howItWorks.title': 'How It Works',
+    'home.howItWorks.subtitle': 'From purchase to playing, our murder mystery games are designed to be easy to host and thrilling to play.',
+    'home.howItWorks.step1.title': 'Purchase Your Game',
+    'home.howItWorks.step1.desc': 'Browse our collection and select the perfect murder mystery for your next gathering.',
+    'home.howItWorks.step2.title': 'Prepare Your Party',
+    'home.howItWorks.step2.desc': 'Invite your friends, set the scene, and assign characters. Our games include everything you need.',
+    'home.howItWorks.step3.title': 'Solve the Mystery',
+    'home.howItWorks.step3.desc': 'Follow the clues, interrogate suspects, and work together to solve the case before time runs out.',
+    'home.cta.title': 'Ready to Host Your Murder Mystery Night?',
+    'home.cta.subtitle': 'Browse our collection of immersive murder mystery games and start your journey as a detective today.',
+    'home.cta.button': 'Shop Games Now',
+    'home.testimonials.title': 'What Our Customers Say',
+    'home.pageTitle': 'Enigma Mysteries | Premium Murder Mystery Games',
+    'home.featured.desc': 'Discover our most popular game, perfect for your next event.',
+    'footer.companyInfo': 'Crafting immersive murder mystery experiences since 2022. Our games bring the thrill of solving crimes to your dinner table.',
+    'footer.quickLinks': 'Quick Links',
+    'footer.home': 'Home',
+    'footer.shop': 'Shop',
+    'footer.myGames': 'My Games',
+    'footer.aboutUs': 'About Us',
+    'footer.faqs': 'FAQs',
+    'footer.contactUs': 'Contact Us',
+    'footer.address': '123 Mystery Lane, Puzzleville, CA 90210',
+    'footer.phone': '(555) 123-4567',
+    'footer.email': 'info@enigmamysteries.com',
+    'footer.copyright': 'All rights reserved.',
+    
+    // Shop Page
+    'shop.hero.title': 'Our Murder Mystery Games',
+    'shop.hero.subtitle': 'Browse our collection of immersive murder mystery experiences. Each game offers unique characters, intriguing plots, and challenging puzzles.',
+    'shop.availableGames': 'Available Games',
+    'shop.showingAll': 'Showing all',
+    'shop.games': 'games',
+    'shop.faq.title': 'Frequently Asked Questions',
+    'shop.faq.players.question': 'How many players are needed?',
+    'shop.faq.players.answer': 'Most of our games are designed for 6-10 players, but the exact number depends on the specific game. The recommended player count is always clearly indicated on each game page.',
+    'shop.faq.duration.question': 'How long does a game typically last?',
+    'shop.faq.duration.answer': 'Our games are designed to be played over 2-4 hours, making them perfect for a dinner party or evening gathering. The exact duration depends on how quickly your group solves the mystery and how much time you spend on role-playing.',
+    'shop.faq.replay.question': 'Can I play the same game multiple times?',
+    'shop.faq.replay.answer': 'While the solution remains the same, many customers enjoy replaying the games with different groups or taking on different character roles. However, for the best experience, we recommend playing each mystery only once as the main detective.',
+    'shop.faq.print.question': 'Do I need to print anything?',
+    'shop.faq.print.answer': 'No! Our digital games are designed to be completely printless. You can access all game materials through your account on any device with a web browser.',
+    'shop.addToCart': 'Add to Cart',
+    'shop.inCart': 'In Cart',
+    
+    // Checkout Page
+    'checkout.title': 'Checkout',
+    'checkout.account': 'Account',
+    'checkout.payment': 'Payment',
+    'checkout.createAccount': 'Create Account',
+    'checkout.paymentDetails': 'Payment Details',
+    'checkout.email': 'Email',
+    'checkout.name': 'Name (optional)',
+    'checkout.password': 'Password',
+    'checkout.continueToPayment': 'Continue to Payment',
+    'checkout.creatingAccount': 'Creating Account...',
+    'checkout.cardNumber': 'Card Number',
+    'checkout.expiryDate': 'Expiry Date',
+    'checkout.cvc': 'CVC',
+    'checkout.nameOnCard': 'Name on Card',
+    'checkout.processingPayment': 'Processing Payment...',
+    'checkout.pay': 'Pay',
+    'checkout.orderSummary': 'Order Summary',
+    'checkout.subtotal': 'Subtotal',
+    'checkout.tax': 'Tax',
+    'checkout.total': 'Total',
+    'checkout.accountCreated': 'Account created successfully. Complete your purchase by entering payment details.',
+    'checkout.terms': 'By completing this purchase, you agree to our Terms of Service and Privacy Policy.',
+    'checkout.stripe': 'Your payment information is securely processed by Stripe.',
+    'checkout.stripeDisclaimer': 'We use Stripe, a trusted third-party payment processor, to ensure your payment information is secure and protected. Your card details are never stored on our servers.',
+    'checkout.alreadyHaveAccount': 'Already have an account?',
+    'checkout.signInInstead': 'Sign in instead',
+    'checkout.purchasing': 'Purchasing',
+    'checkout.amount': 'Amount',
+    'checkout.paymentSuccess': 'Payment successful! Redirecting to your products...',
+    'checkout.orderError': 'Failed to create order',
+    'checkout.orderItemError': 'Failed to create order item',
+    
+    // My Products Page
+    'myProducts.title': 'My Mystery Games',
+    'myProducts.loading': 'Loading your games...',
+    'myProducts.loadError': 'Failed to load your games. Please try again later.',
+    'myProducts.welcome': 'Welcome to your mystery library!',
+    'myProducts.welcomeDesc': 'Click on any game to start playing. You can access these games anytime by logging into your account.',
+    'myProducts.noGames': 'No Games Yet',
+    'myProducts.noGamesDesc': "You haven't purchased any mystery games yet. Visit our shop to get started!",
+    'myProducts.browseGames': 'Browse Games',
+    'myProducts.playNow': 'Play Now',
+    
+    // Game Viewer
+    'game.backToMyGames': 'Back to My Games',
+    'game.introduction': 'Introduction',
+    'game.characters': 'Characters',
+    'game.round1': 'Round 1',
+    'game.round2': 'Round 2',
+    'game.round3': 'Round 3',
+    'game.solution': 'Solution',
+    'game.previous': 'Previous',
+    'game.next': 'Next',
+    'game.solutionRevealed': 'Solution Revealed',
+    'game.scenario': 'Murder Mystery Scenario:',
+    'game.setting': 'Setting',
+    'game.crime': 'The Crime',
+    'game.victim': 'Victim:',
+    'game.time': 'Time:',
+    'game.cause': 'Cause of Death:',
+    'game.discoveredBy': 'Discovered By:',
+    'game.charactersDesc': 'Each player must select a role from the list of available characters and read the character\'s secret privately. If you are using a phone, you can pass it to each player to make their choice and read their secret.',
+    'game.secret': 'Secret:',
+    'game.revealSecret': 'Reveal Secret',
+    'game.secretRevealed': 'Secret Revealed',
+    'game.cluesDesc': 'Clues are discovered in rounds. Examine each clue carefully.',
+    'game.round': 'Round:',
+    'game.solutionWarning': 'Are you ready to reveal the solution?',
+    'game.solutionWarningDesc': 'Make sure everyone has shared their theories before revealing the truth.',
+    'game.revealSolution': 'Reveal Solution',
+    'game.murderer': 'The Murderer',
+    'game.explanation': 'Explanation',
+    'game.enjoyedGame': 'We hope you enjoyed solving this mystery! Ready for another challenge?',
+    'game.loading': 'Loading game...',
+    'game.notFound': 'Game not found',
+    'game.noVariations': 'No variations found for this game.',
+    'game.loadError': 'Failed to load game. Please try again later.',
+    'game.variationError': 'Failed to load selected variation.',
+    
+    // Player Selection
+    'game.selectPlayers': 'Select Number of Players',
+    'game.selectPlayersDesc': 'Choose how many players will be participating in this mystery.',
+    'game.selectPlayersFirst': 'Please select the number of players first',
+    'game.players': 'players',
+    
+    // Game Data
+    'game.deathAtRosewood.title': 'Death at the Rosewood Estate',
+    'game.deathAtRosewood.subtitle': 'A 1920s Dinner Party Murder',
+    'game.deathAtRosewood.description': 'Immerse yourself in the glamorous 1920s as you attend a lavish dinner party at the Rosewood Estate. When the wealthy host is found dead, it\'s up to you and your fellow guests to solve the mystery before the killer strikes again.',
+    'game.deathAtRosewood.shortDescription': 'A glamorous 1920s dinner party turns deadly when the wealthy host is found poisoned.',
+    'game.deathAtRosewood.setting': 'A lavish 1920s dinner party at the Rosewood Estate, hosted by the wealthy yet secretive Harold Langston. The occasion? A charity fundraiser… or so it seemed.',
+    
+    // Common
+    'common.difficulty': 'Difficulty:',
+    'common.players': 'players',
+    'common.duration': 'Duration:',
+    'common.hours': 'hours',
+    'common.close': 'Close',
+    'common.cancel': 'Cancel',
+    'common.fillRequired': 'Please fill in all required fields',
+    'common.error': 'An error occurred',
+    'common.tryAgain': 'Try Again',
+    
+    // Terms and Conditions
+    'terms.title': 'Terms and Conditions',
+    'terms.lastUpdated': 'Last updated:',
+    'terms.introduction.title': '1. Introduction',
+    'terms.introduction.content': 'Welcome to Enigma Mysteries. By accessing or using our website and purchasing our digital products, you agree to be bound by these Terms and Conditions. Please read them carefully before making a purchase.',
+    'terms.digitalProducts.title': '2. Digital Products',
+    'terms.digitalProducts.content': 'All products sold on this website are digital goods delivered electronically. No physical items will be shipped. Upon successful payment, you will receive access to your purchased games via your account dashboard.',
+    'terms.payment.title': '3. Payment',
+    'terms.payment.content': 'We accept payment through secure third-party payment processors (Stripe). By submitting your payment information, you authorize us to charge the applicable fees for your order.',
+    'terms.delivery.title': '4. Delivery',
+    'terms.delivery.content': 'After your payment is confirmed, your digital products will be available for access in your account. Please ensure your email address is correct to receive important notifications.',
+    'terms.refunds.title': '5. Refunds',
+    'terms.refunds.content': 'If you are not satisfied with your purchase or have issues accessing your digital product, please contact our support team at `support@enigmamystery.com`',
+    'terms.userAccounts.title': '6. User Accounts',
+    'terms.userAccounts.content': 'You are responsible for maintaining the confidentiality of your account credentials. Do not share your login information with others. You are responsible for all activities that occur under your account.',
+    'terms.intellectualProperty.title': '7. Intellectual Property',
+    'terms.intellectualProperty.content': 'All content, games, and materials provided on this website are the intellectual property of Enigma Mysteries or its licensors. You may not reproduce, distribute, or create derivative works without our express written permission.',
+    'terms.prohibitedUse.title': '8. Prohibited Use',
+    'terms.prohibitedUse.content': 'You agree not to use our products or website for any unlawful purpose, or to violate any applicable laws or regulations.',
+    'terms.limitationOfLiability.title': '9. Limitation of Liability',
+    'terms.limitationOfLiability.content': 'To the fullest extent permitted by law, Enigma Mysteries shall not be liable for any indirect, incidental, or consequential damages arising from your use of our website or products.',
+    'terms.changesToTerms.title': '10. Changes to Terms',
+    'terms.changesToTerms.content': 'We reserve the right to update these Terms and Conditions at any time. Changes will be posted on this page with the updated date.',
+    'terms.contactUs.title': '11. Contact Us',
+    'terms.contactUs.content': 'If you have any questions about these Terms and Conditions, please contact us at support@enigmamystery.com',
+  },
+  bg: {
+    // Navigation
+    'nav.home': 'Начало',
+    'nav.shop': 'Магазин',
+    'nav.myGames': 'Моите Игри',
+    'nav.signIn': 'Вход',
+    'nav.cart': 'Количка',
+    'nav.myAccount': 'Моят Профил',
+    'nav.siteName': 'Енигма Мистерии',
+    'nav.english': 'Английски',
+    'nav.bulgarian': 'Български',
+    'nav.logout': 'Изход',
+    
+    // Authentication
+    'auth.signIn': 'Вход',
+    'auth.signUp': 'Регистрация',
+    'auth.email': 'Имейл',
+    'auth.password': 'Парола',
+    'auth.confirmPassword': 'Потвърдете Паролата',
+    'auth.name': 'Име',
+    'auth.pleaseSignIn': 'Моля влезте в профила си, за да завършите покупката',
+    'auth.emailPlaceholder': 'Въведете вашия имейл адрес',
+    'auth.passwordPlaceholder': 'Въведете вашата парола',
+    'auth.forgotPassword': 'Забравена Парола?',
+    'auth.backToLogin': 'Обратно към Вход',
+    'auth.forgotPasswordDesc': 'Въведете вашия имейл адрес и ще ви изпратим линк за възстановяване на паролата.',
+    'auth.sendResetEmail': 'Изпрати Имейл за Възстановяване',
+    'auth.emailSent': 'Имейлът е Изпратен!',
+    'auth.emailSentDesc': 'Изпратихме линк за възстановяване на паролата на вашия имейл адрес.',
+    'auth.checkSpam': 'Не забравяйте да проверите папката за спам.',
+    'auth.resetPassword': 'Възстановяване на Парола',
+    'auth.resetPasswordDesc': 'Въведете новата си парола по-долу.',
+    'auth.newPassword': 'Нова Парола',
+    'auth.newPasswordPlaceholder': 'Въведете нова парола',
+    'auth.confirmPasswordPlaceholder': 'Потвърдете новата парола',
+    'auth.updatePassword': 'Обновете Паролата',
+    'auth.signingIn': 'Влизане...',
+    'auth.sendingEmail': 'Изпращане на Имейл...',
+    'auth.updatingPassword': 'Обновяване на Парола...',
+    'auth.invalidCredentials': 'Невалиден имейл или парола',
+    'auth.passwordMismatch': 'Паролите не съвпадат',
+    'auth.passwordTooShort': 'Паролата трябва да бъде поне 6 символа',
+    'auth.passwordResetSuccess': 'Паролата е променена успешно! Сега можете да влезете с новата си парола.',
+    'auth.registrationFailed': 'Регистрацията не беше успешна. Моля, опитайте отново.',
+    'auth.or': 'или',
+    'auth.switchToRegister': 'Създайте акаунт',
+    'auth.switchToLogin': 'Влезте в акаунта си',
+    
+    // Cart
+    'cart.title': 'Количка за Пазаруване',
+    'cart.items': 'Артикули в Количката',
+    'cart.item': 'артикул',
+    'cart.empty.title': 'Вашата Количка е Празна',
+    'cart.empty.description': 'Изглежда, че все още не сте добавили детективски игри в количката си. Разгледайте нашата колекция, за да започнете!',
+    'cart.empty.browseGames': 'Разгледайте Игри',
+    'cart.clearAll': 'Изчисти Всичко',
+    'cart.removeItem': 'Премахни артикул',
+    'cart.each': 'всеки',
+    'cart.orderSummary': 'Обобщение на Поръчката',
+    'cart.subtotal': 'Междинна Сума',
+    'cart.tax': 'Данък',
+    'cart.total': 'Общо',
+    'cart.proceedToCheckout': 'Продължете към Плащане',
+    'cart.continueShopping': 'Продължете Пазаруването',
+    
+    // Home Page
+    'home.hero.title': 'Впусни се в разследване на',
+    'home.hero.titleHighlight': 'Мистериозни Убийства',
+    'home.hero.titleEnd': '!',
+    'home.hero.subtitle': 'Потопете се в сложни мистерии със заплетени сюжети, завладяващи герои и неочаквани обрати.',
+    'home.hero.exploreGames': 'Разгледайте Игрите',
+    'home.hero.howItWorks': 'Как Работи',
+    'home.featured.title': 'Препоръчана Мистерия',
+    'home.featured.badge': 'Препоръчана',
+    'home.featured.viewDetails': 'Вижте Детайли',
+    'home.howItWorks.title': 'Как Работи',
+    'home.howItWorks.subtitle': 'От покупката до играта, нашите детективски мистерии са проектирани да бъдат лесни за организиране и вълнуващи за игра.',
+    'home.howItWorks.step1.title': 'Купете Вашата Игра',
+    'home.howItWorks.step1.desc': 'Разгледайте нашата колекция и изберете перфектната детективска мистерия за вашето следващо събиране.',
+    'home.howItWorks.step2.title': 'Подгответе Партито',
+    'home.howItWorks.step2.desc': 'Поканете приятелите си, създайте атмосферата и стартирайте играта. Нашите игри ще ви водят последователно през вички етапи на разкритието.',
+    'home.howItWorks.step3.title': 'Разгадайте Мистерията',
+    'home.howItWorks.step3.desc': 'Следвайте уликите и разпитвайте заподозрените, за да откриете убиеца, който до последно няма да подозира за тази негова роля.',
+    'home.cta.title': 'Готови ли сте за Вашата Детективска Вечер?',
+    'home.cta.subtitle': 'Разгледайте нашата колекция от завладяващи детективски игри и започнете пътуването си като детектив днес.',
+    'home.cta.button': 'Купете Игри Сега',
+    'home.testimonials.title': 'Какво Казват Нашите Клиенти',
+    'home.pageTitle': 'Енигма Мистерии | Премиум Детективски Игри',
+    'home.featured.desc': 'Открийте нашата най-популярна игра, перфектна за вашето следващо събитие.',
+    'footer.companyInfo': 'Нашите игри носят тръпката от разкриването на престъпления директно на вашата маса.',
+    'footer.quickLinks': 'Бързи Връзки',
+    'footer.home': 'Начало',
+    'footer.shop': 'Магазин',
+    'footer.myGames': 'Моите Игри',
+    'footer.aboutUs': 'За Нас',
+    'footer.faqs': 'ЧЗВ',
+    'footer.contactUs': 'Контакти',
+    'footer.address': 'ул. Мистерия 123, Пъзълвил, София 1000',
+    'footer.phone': '(088) 123-4567',
+    'footer.email': 'info@enigmamysteries.com',
+    'footer.copyright': 'Всички права запазени.',
+    
+    // Shop Page
+    'shop.hero.title': 'Нашите Детективски Игри',
+    'shop.hero.subtitle': 'Разгледайте нашата колекция от завладяващи детективски преживявания. Всяка игра предлага уникални герои, интригуващи сюжети и предизвикателни загадки.',
+    'shop.availableGames': 'Налични Игри',
+    'shop.showingAll': 'Показване на всички',
+    'shop.games': 'игри',
+    'shop.faq.title': 'Често Задавани Въпроси',
+    'shop.faq.players.question': 'Колко играчи са необходими?',
+    'shop.faq.players.answer': 'Повечето от нашите игри са проектирани за 6-10 играчи, но точният брой зависи от конкретната игра. Препоръчителният брой играчи винаги е ясно посочен на всяка страница с игра.',
+    'shop.faq.duration.question': 'Колко време обикновено трае една игра?',
+    'shop.faq.duration.answer': 'Нашите игри са проектирани да се играят в продължение на 1-2 часа, което ги прави перфектни за вечеря или уикенд събиране. Точната продължителност зависи от това колко бързо групата ви разгадае мистерията и колко време прекарате в ролевата игра.',
+    'shop.faq.replay.question': 'Мога ли да играя същата игра няколко пъти?',
+    'shop.faq.replay.answer': 'Въпреки че решението остава същото, някои клиенти се наслаждават на повторно изиграване на игрите с различни групи от хора. Въпреки това, за най-доброто преживяване препоръчваме да играете всяка мистерия само веднъж, тъй като убиецът е един и същ.',
+    'shop.faq.print.question': 'Трябва ли да отпечатвам нещо?',
+    'shop.faq.print.answer': 'Не! Нашите дигитални игри са проектирани изцяло онлайн, без необходимост от печат. Можете да получите достъп до всички игрови материали чрез вашия профил на всяко устройство с уеб браузър.',
+    'shop.addToCart': 'Добави в количката',
+    'shop.inCart': 'В количката',
+    
+    // Checkout Page
+    'checkout.title': 'Поръчка',
+    'checkout.account': 'Профил',
+    'checkout.payment': 'Плащане',
+    'checkout.createAccount': 'Създайте Профил',
+    'checkout.paymentDetails': 'Детайли за Плащане',
+    'checkout.email': 'Имейл',
+    'checkout.name': 'Име (по избор)',
+    'checkout.password': 'Парола',
+    'checkout.continueToPayment': 'Продължете към Плащане',
+    'checkout.creatingAccount': 'Създаване на Профил...',
+    'checkout.cardNumber': 'Номер на Карта',
+    'checkout.expiryDate': 'Дата на Изтичане',
+    'checkout.cvc': 'CVC',
+    'checkout.nameOnCard': 'Име на Картата',
+    'checkout.processingPayment': 'Обработка на плащането...',
+    'checkout.pay': 'Плати',
+    'checkout.orderSummary': 'Обобщение на поръчката',
+    'checkout.subtotal': 'Междинна сума',
+    'checkout.tax': 'Данък',
+    'checkout.total': 'Общо',
+    'checkout.accountCreated': 'Акаунтът е създаден успешно. Завършете покупката си, като въведете данни за плащане.',
+    'checkout.terms': 'С завършването на тази покупка, вие се съгласявате с нашите Общи условия и Политика за поверителност.',
+    'checkout.stripe': 'Вашата информация за плащане се обработва сигурно от Stripe.',
+    'checkout.stripeDisclaimer': 'Използваме Stripe, доверен външен процесор на плащания, за да гарантираме, че вашата информация за плащане е защитена. Данните за вашата карта никога не се съхраняват на нашите сървъри.',
+    'checkout.alreadyHaveAccount': 'Вече имате акаунт?',
+    'checkout.signInInstead': 'Влезте вместо това',
+    'checkout.purchasing': 'Закупуване на',
+    'checkout.amount': 'Сума',
+    'checkout.paymentSuccess': 'Плащането е успешно! Пренасочване към вашите продукти...',
+    'checkout.orderError': 'Неуспешно създаване на поръчка',
+    'checkout.orderItemError': 'Неуспешно създаване на елемент от поръчката',
+    
+    // My Products Page
+    'myProducts.title': 'Моите Детективски Игри',
+    'myProducts.loading': 'Зареждане на вашите игри...',
+    'myProducts.loadError': 'Неуспешно зареждане на вашите игри. Моля, опитайте отново по-късно.',
+    'myProducts.welcome': 'Добре дошли във вашата библиотека с мистерии!',
+    'myProducts.welcomeDesc': 'Кликнете върху която и да е игра, за да започнете. Можете да достъпвате тези игри по всяко време, като влезете в профила си.',
+    'myProducts.noGames': 'Все още няма игри',
+    'myProducts.noGamesDesc': 'Все още не сте закупили мистерийни игри. Посетете нашия магазин, за да започнете!',
+    'myProducts.browseGames': 'Разгледайте игрите',
+    'myProducts.playNow': 'Играй сега',
+    
+    // Game Viewer
+    'game.backToMyGames': 'Обратно към Моите Игри',
+    'game.introduction': 'Въведение',
+    'game.characters': 'Герои',
+    'game.round1': 'Рунд 1',
+    'game.round2': 'Рунд 2',
+    'game.round3': 'Рунд 3',
+    'game.solution': 'Решение',
+    'game.previous': 'Предишен',
+    'game.next': 'Следващ',
+    'game.solutionRevealed': 'Разкрита Развръзка',
+    'game.scenario': 'Сценарий на Мистериозно убийство:',
+    'game.setting': 'Обстановка',
+    'game.crime': 'Престъплението',
+    'game.victim': 'Жертва:',
+    'game.time': 'Време:',
+    'game.cause': 'Причина за Смъртта:',
+    'game.discoveredBy': 'Открито от:',
+    'game.charactersDesc': 'Всеки играч трябва да избере роля от списъка и да се запознае с неговата тайна, без да я споделя с останалите. Ако използвате телефон, може да го подадете на всеки играч за да направи своя избор и да прочете своята тайна.',
+    'game.secret': 'Тайна:',
+    'game.revealSecret': 'Разкрий Тайната',
+    'game.secretRevealed': 'Тайната е разкрита',
+    'game.cluesDesc': 'Уликите се откриват в кръгове. Разгледайте внимателно всяка улика.',
+    'game.round': 'Кръг:',
+    'game.solutionWarning': 'Готови ли сте да разкриете развръзката?',
+    'game.solutionWarningDesc': 'Уверете се, че всички са споделили своите теории, преди да разкриете истината.',
+    'game.revealSolution': 'Разкрий Развръзката',
+    'game.murderer': 'Убиецът',
+    'game.explanation': 'Обяснение',
+    'game.enjoyedGame': 'Надяваме се, че се наслаждавахте на решаването на тази мистерия! Готови ли сте за ново предизвикателство?',
+    'game.loading': 'Зареждане на играта...',
+    'game.notFound': 'Играта не е намерена',
+    'game.noVariations': 'Не са намерени варианти за тази игра.',
+    'game.loadError': 'Неуспешно зареждане на играта. Моля, опитайте отново по-късно.',
+    'game.variationError': 'Неуспешно зареждане на избрания вариант.',
+    
+    // Player Selection
+    'game.selectPlayers': 'Изберете Брой Играчи',
+    'game.selectPlayersDesc': 'Изберете колко играчи ще участват в тази мистерия.',
+    'game.selectPlayersFirst': 'Моля, първо изберете броя играчи',
+    'game.players': 'играчи',
+    
+    // Game Data
+    'game.deathAtRosewood.title': 'Смърт в Имението Роузууд',
+    'game.deathAtRosewood.subtitle': 'Убийство на Вечеря от 1920-те',
+    'game.deathAtRosewood.description': 'Потопете се в гламурните 1920-те, докато присъствате на разкошна вечеря в Имението Роузууд. Когато богатият домакин е намерен мъртъв, зависи от вас и другите гости да разгадаете мистерията преди убиецът да удари отново.',
+    'game.deathAtRosewood.shortDescription': 'Гламурна вечеря от 1920-те се превръща в смъртоносна, когато богатият домакин е намерен отровен.',
+    'game.deathAtRosewood.setting': 'Разкошна вечеря от 1920-те в Имението Роузууд, организирана от богатия, но скритен Харолд Лангстън. Поводът? Благотворителна кампания... или поне така изглеждаше.',
+    
+    // Common
+    'common.difficulty': 'Трудност:',
+    'common.players': 'играчи',
+    'common.duration': 'Продължителност:',
+    'common.hours': 'часа',
+    'common.close': 'Затвори',
+    'common.cancel': 'Отказ',
+    'common.fillRequired': 'Моля, попълнете всички задължителни полета',
+    'common.error': 'Възникна грешка',
+    'common.tryAgain': 'Опитайте отново',
+    
+    // Terms and Conditions
+    'terms.title': 'Общи Условия',
+    'terms.lastUpdated': 'Последна актуализация:',
+    'terms.introduction.title': '1. Въведение',
+    'terms.introduction.content': 'Добре дошли в Enigma Mysteries. С достъпването или използването на нашия уебсайт и закупуването на нашите дигитални продукти, вие се съгласявате с тук описаните Общи Условия за ползване на сайта. Моля, прочетете ги внимателно преди да направите покупка.',
+    'terms.digitalProducts.title': '2. Дигитални Продукти',
+    'terms.digitalProducts.content': 'Всички продукти, продавани на този уебсайт, са дигитални стоки, доставяни електронно. Няма да се изпращат физически предмети. След успешно плащане, ще получите достъп до закупените игри чрез менюто за управление на вашия акаунт.',
+    'terms.payment.title': '3. Плащане',
+    'terms.payment.content': 'Приемаме плащания чрез сигурни процесори за трети страни (Stripe). С подаването на информацията си за плащане, вие ни упълномощавате да начислим съответните такси за вашата поръчка.',
+    'terms.delivery.title': '4. Доставка',
+    'terms.delivery.content': 'След потвърждение на плащането ви, вашите дигитални продукти ще бъдат достъпни в акаунта ви. Моля, уверете се, че вашият имейл адрес е правилен, за да получавате важни известия.',
+    'terms.refunds.title': '5. Възстановяване на суми',
+    'terms.refunds.content': 'Ако не сте доволни от покупката си или имате проблеми с достъпа до дигиталния си продукт, моля, свържете се с нашия екип за поддръжка чрез `support@enigmamystery.com`',
+    'terms.userAccounts.title': '6. Потребителски Акаунти',
+    'terms.userAccounts.content': 'Вие отговаряте за запазването на поверителността на данните за достъп до акаунта си. Не споделяйте информацията си за вход с други. Вие отговаряте за всички действия, които се извършват с вашия акаунт.',
+    'terms.intellectualProperty.title': '7. Интелектуална Собственост',
+    'terms.intellectualProperty.content': 'Цялото съдържание, игри и материали, предоставени на този уебсайт, са интелектуална собственост на Enigma Mystery или неговите автори. Не можете да възпроизвеждате, разпространявате или създавате производни продукти или решения без нашето изрично писмено разрешение.',
+    'terms.prohibitedUse.title': '8. Забранена Употреба',
+    'terms.prohibitedUse.content': 'Вие се съгласявате да не използвате нашите продукти или уебсайт за незаконни цели или за нарушаване на приложимите закони или разпоредби.',
+    'terms.limitationOfLiability.title': '9. Ограничаване на Отговорността',
+    'terms.limitationOfLiability.content': 'В максималната степен, разрешена от закона, Enigma Mystery не носи отговорност за никакви косвени, случайни или последващи щети, произтичащи от използването на нашия уебсайт или продукти.',
+    'terms.changesToTerms.title': '10. Промени в Условията',
+    'terms.changesToTerms.content': 'Запазваме си правото да актуализираме тези Общи Условия по всяко време. Промените ще бъдат публикувани на тази страница с датата на актуализация.',
+    'terms.contactUs.title': '11. Контакти',
+    'terms.contactUs.content': 'Ако имате въпроси относно тези Общи Условия, моля, свържете се с нас на `support@enigmamystery.com`',
+  }
+};
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>(() => {
+    // Try to get language from localStorage first
+    const storedLang = localStorage.getItem('preferredLanguage');
+    return (storedLang as Language) || 'en';
+  });
+
+  useEffect(() => {
+    const detectUserCountry = async () => {
+      // Only detect if there's no stored preference
+      if (!localStorage.getItem('preferredLanguage')) {
+        try {
+          const response = await fetch('https://ipapi.co/json/');
+          const data = await response.json();
+          
+          // Set Bulgarian for users from Bulgaria
+          const detectedLang = data.country_code === 'BG' ? 'bg' : 'en';
+          setLanguage(detectedLang);
+          localStorage.setItem('preferredLanguage', detectedLang);
+        } catch (error) {
+          console.error('Error detecting user location:', error);
+          // Default to English if detection fails
+          setLanguage('en');
+          localStorage.setItem('preferredLanguage', 'en');
+        }
+      }
+    };
+
+    detectUserCountry();
+  }, []);
+
+  // Update localStorage when language changes manually
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem('preferredLanguage', lang);
+  };
+
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
