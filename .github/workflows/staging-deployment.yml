@@ -35,7 +35,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /home/enigmamystery/www/staging
+          server-dir: public_html/
           local-dir: ./dist/
           # This action deploys the contents of the 'dist' folder to your server.
           # You MUST configure the secrets in your GitHub repository settings. 
