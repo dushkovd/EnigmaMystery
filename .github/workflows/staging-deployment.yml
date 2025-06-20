@@ -35,7 +35,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps-legacy # Use explicit FTPS for secure connection
+          protocol: ftps # Use Implicit FTPS
           server-dir: /home/enigmamystery/www/staging/public_html/
           local-dir: ./dist/
           # This action deploys the contents of the 'dist' folder to your server.
