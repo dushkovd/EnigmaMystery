@@ -5,6 +5,7 @@ import { Layers, Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react
 import { getActiveGames, Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import { useGames } from '../context/GameContext';
 import { formatDuration } from '../utils/durationFormatter';
 import { formatPrice } from '../utils/currencyFormatter';
 
@@ -12,29 +13,16 @@ const HomePage: React.FC = () => {
   const { t, language } = useLanguage();
   const { addToCart, cartGames } = useCart();
   const navigate = useNavigate();
+  const { games, loading, error } = useGames();
   const [featuredGame, setFeaturedGame] = useState<Game | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = t('home.pageTitle');
-
-    const fetchGames = async () => {
-      try {
-        const games = await getActiveGames();
-        // Find the game with featured = true, or fall back to the first game
-        const featuredGame = games.find(game => game.featured) || (games.length > 0 ? games[0] : null);
-        setFeaturedGame(featuredGame);
-      } catch (error) {
-        console.error('Error fetching games:', error);
-        setFeaturedGame(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGames();
-  }, []);
+    if (!loading && games.length > 0) {
+      const featured = games.find(game => game.featured) || games[0];
+      setFeaturedGame(featured);
+    }
+  }, [games, loading, t]);
 
   const handleAddToCart = (game: Game) => {
     addToCart(game.id);
@@ -378,7 +366,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
               <p className="text-secondary-600">
-                "I hosted 'Betrayal at Blackrock Manor' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
+                "I hosted 'Murder on the Midnight Express' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
               </p>
             </motion.div>
 
@@ -408,7 +396,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
               <p className="text-secondary-600">
-                "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Murder on the Orient Starlight' was our favorite so far!"
+                "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Death at Rosewood Estate' was our favorite so far!"
               </p>
             </motion.div>
           </div>

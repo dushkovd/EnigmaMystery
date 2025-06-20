@@ -108,13 +108,14 @@ const translations: Record<string, Record<string, string>> = {
     'home.testimonials.title': 'What Our Customers Say',
     'home.pageTitle': 'Enigma Mysteries | Premium Murder Mystery Games',
     'home.featured.desc': 'Discover our most popular game, perfect for your next event.',
-    'footer.companyInfo': 'Crafting immersive murder mystery experiences since 2022. Our games bring the thrill of solving crimes to your dinner table.',
+    'footer.companyInfo': 'Crafting immersive murder mystery experiences. Our games bring the thrill of solving crimes to your dinner table.',
     'footer.quickLinks': 'Quick Links',
     'footer.home': 'Home',
     'footer.shop': 'Shop',
     'footer.myGames': 'My Games',
     'footer.aboutUs': 'About Us',
     'footer.faqs': 'FAQs',
+    'footer.terms': 'Terms',
     'footer.contactUs': 'Contact Us',
     'footer.address': '123 Mystery Lane, Puzzleville, CA 90210',
     'footer.phone': '(555) 123-4567',
@@ -182,6 +183,9 @@ const translations: Record<string, Record<string, string>> = {
     'myProducts.noGamesDesc': "You haven't purchased any mystery games yet. Visit our shop to get started!",
     'myProducts.browseGames': 'Browse Games',
     'myProducts.playNow': 'Play Now',
+    
+    // FAQ Page
+    'faq.title': 'Frequently Asked Questions',
     
     // Game Viewer
     'game.backToMyGames': 'Back to My Games',
@@ -358,13 +362,14 @@ const translations: Record<string, Record<string, string>> = {
     'home.testimonials.title': 'Какво Казват Нашите Клиенти',
     'home.pageTitle': 'Енигма Мистерии | Премиум Детективски Игри',
     'home.featured.desc': 'Открийте нашата най-популярна игра, перфектна за вашето следващо събитие.',
-    'footer.companyInfo': 'Нашите игри носят тръпката от разкриването на престъпления директно на вашата маса.',
+    'footer.companyInfo': 'Създаваме завладяващи преживявания с разследване на мистериозни убийства. Нашите игри носят тръпката от разкриване на престъпления директно на вашата маса.',
     'footer.quickLinks': 'Бързи Връзки',
     'footer.home': 'Начало',
     'footer.shop': 'Магазин',
     'footer.myGames': 'Моите Игри',
     'footer.aboutUs': 'За Нас',
     'footer.faqs': 'ЧЗВ',
+    'footer.terms': 'Условия',
     'footer.contactUs': 'Контакти',
     'footer.address': 'ул. Мистерия 123, Пъзълвил, София 1000',
     'footer.phone': '(088) 123-4567',
@@ -433,8 +438,11 @@ const translations: Record<string, Record<string, string>> = {
     'myProducts.browseGames': 'Разгледайте игрите',
     'myProducts.playNow': 'Играй сега',
     
+    // FAQ Page
+    'faq.title': 'Често задавани въпроси',
+    
     // Game Viewer
-    'game.backToMyGames': 'Обратно към Моите Игри',
+    'game.backToMyGames': 'Обратно към Моите игри',
     'game.introduction': 'Въведение',
     'game.characters': 'Герои',
     'game.round1': 'Рунд 1',

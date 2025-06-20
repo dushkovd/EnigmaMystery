@@ -104,48 +104,6 @@ const ShopPage: React.FC = () => {
           )}
         </div>
       </section>
-
-      {/* FAQ Section */}
-      <section className="section bg-white">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('shop.faq.title')}</h2>
-            <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <div className="space-y-6">
-              <div className="bg-secondary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-display font-bold mb-2">{t('shop.faq.players.question')}</h3>
-                <p className="text-secondary-600">
-                  {t('shop.faq.players.answer')}
-                </p>
-              </div>
-              
-              <div className="bg-secondary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-display font-bold mb-2">{t('shop.faq.duration.question')}</h3>
-                <p className="text-secondary-600">
-                  {t('shop.faq.duration.answer')}
-                </p>
-              </div>
-              
-              <div className="bg-secondary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-display font-bold mb-2">{t('shop.faq.replay.question')}</h3>
-                <p className="text-secondary-600">
-                  {t('shop.faq.replay.answer')}
-                </p>
-              </div>
-              
-              <div className="bg-secondary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-display font-bold mb-2">{t('shop.faq.print.question')}</h3>
-                <p className="text-secondary-600">
-                  {t('shop.faq.print.answer')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 };

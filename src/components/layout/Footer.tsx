@@ -1,81 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Layers, Facebook, Twitter, Instagram } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-secondary-800 text-white pt-12 pb-6">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Company Info */}
-          <div>
-            <div className="flex items-center mb-4">
+    <footer className="bg-secondary-800 text-secondary-300">
+      <div className="container-custom py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Brand Info */}
+          <div className="space-y-4">
+            <Link to="/" className="flex items-center text-white mb-2">
               <Layers className="w-8 h-8 text-accent-400 mr-2" />
               <span className="font-display text-xl font-bold">{t('nav.siteName')}</span>
-            </div>
-            <p className="text-secondary-200 mb-4">
+            </Link>
+            <p className="max-w-md">
               {t('footer.companyInfo')}
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-secondary-300 hover:text-accent-400 transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-secondary-300 hover:text-accent-400 transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-secondary-300 hover:text-accent-400 transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
+              <a href="#" className="text-secondary-300 hover:text-white"><Facebook /></a>
+              <a href="#" className="text-secondary-300 hover:text-white"><Twitter /></a>
+              <a href="#" className="text-secondary-300 hover:text-white"><Instagram /></a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-display font-bold mb-4">{t('footer.quickLinks')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-secondary-300 hover:text-accent-400 transition-colors">{t('footer.home')}</Link>
-              </li>
-              <li>
-                <Link to="/shop" className="text-secondary-300 hover:text-accent-400 transition-colors">{t('footer.shop')}</Link>
-              </li>
-              <li>
-                <Link to="/my-products" className="text-secondary-300 hover:text-accent-400 transition-colors">{t('footer.myGames')}</Link>
-              </li>
-              <li>
-                <a href="#" className="text-secondary-300 hover:text-accent-400 transition-colors">{t('footer.aboutUs')}</a>
-              </li>
-              <li>
-                <a href="#" className="text-secondary-300 hover:text-accent-400 transition-colors">{t('footer.faqs')}</a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-display font-bold mb-4">{t('footer.contactUs')}</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 text-accent-400 mr-2 mt-0.5" />
-                <span className="text-secondary-300">{t('footer.address')}</span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 text-accent-400 mr-2" />
-                <span className="text-secondary-300">{t('footer.phone')}</span>
-              </li>
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 text-accent-400 mr-2" />
-                <span className="text-secondary-300">{t('footer.email')}</span>
-              </li>
+          <div className="flex flex-col items-start md:items-start">
+            <h4 className="font-bold text-white mb-4">{t('footer.quickLinks')}</h4>
+            <ul className="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
+              <li><Link to="/" className="hover:text-white">{t('nav.home')}</Link></li>
+              <li><Link to="/shop" className="hover:text-white">{t('nav.shop')}</Link></li>
+              <li><Link to="/my-products" className="hover:text-white">{t('nav.myGames')}</Link></li>
+              <li><Link to="/faq" className="hover:text-white">{t('footer.faqs')}</Link></li>
+              <li><Link to="/terms" className="hover:text-white">{t('footer.terms')}</Link></li>
             </ul>
           </div>
         </div>
-
-        {/* Copyright */}
-        <div className="pt-6 border-t border-secondary-700 text-center text-secondary-400 text-sm">
+      </div>
+      <div className="border-t border-secondary-700 py-4">
+        <div className="container-custom text-center text-sm">
           <p>&copy; {new Date().getFullYear()} {t('nav.siteName')}. {t('footer.copyright')}</p>
         </div>
       </div>

@@ -1,41 +1,76 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { SupportedCurrency, getCurrencyForCountry } from '../utils/currencyFormatter';
+
+type Currency = 'usd' | 'eur' | 'bgn';
 
 interface CurrencyContextType {
-  currency: SupportedCurrency;
-  setCurrency: (currency: SupportedCurrency) => void;
+  currency: Currency;
+  setCurrency: (currency: Currency) => void;
+  loading: boolean;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
-export function useCurrency() {
+export const useCurrency = () => {
   const context = useContext(CurrencyContext);
   if (context === undefined) {
     throw new Error('useCurrency must be used within a CurrencyProvider');
   }
   return context;
+};
+
+interface CurrencyProviderProps {
+  children: ReactNode;
 }
 
-export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrency] = useState<SupportedCurrency>('EUR');
+export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) => {
+  const [currency, setCurrency] = useState<Currency>('usd');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Attempt to detect user's country
-    fetch('https://ipapi.co/json/')
-      .then(response => response.json())
-      .then(data => {
-        const detectedCurrency = getCurrencyForCountry(data.country);
-        setCurrency(detectedCurrency);
-      })
-      .catch(() => {
-        // If detection fails, default to EUR
-        setCurrency('EUR');
-      });
+    const initializeCurrency = async () => {
+      try {
+        const savedCurrency = localStorage.getItem('user-currency');
+        
+        if (savedCurrency && ['usd', 'eur', 'bgn'].includes(savedCurrency)) {
+          setCurrency(savedCurrency as Currency);
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        let determinedCurrency: Currency = 'usd';
+
+        if (data.country_code === 'BG') {
+          determinedCurrency = 'bgn';
+        } else if (data.continent_code === 'EU') {
+          determinedCurrency = 'eur';
+        }
+        
+        setCurrency(determinedCurrency);
+        localStorage.setItem('user-currency', determinedCurrency);
+      } catch (error) {
+        console.error('Failed to fetch currency, defaulting to USD:', error);
+        setCurrency('usd');
+        localStorage.setItem('user-currency', 'usd'); // Save default on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeCurrency();
   }, []);
 
+  const handleSetCurrency = (newCurrency: Currency) => {
+    setCurrency(newCurrency);
+    localStorage.setItem('user-currency', newCurrency);
+  };
+
+  const value = { currency, setCurrency: handleSetCurrency, loading };
+
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency }}>
+    <CurrencyContext.Provider value={value}>
       {children}
     </CurrencyContext.Provider>
   );
-} 
+}; 

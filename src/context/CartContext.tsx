@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Game, getActiveGames } from '../api/games';
+import { Game } from '../api/games';
+import { useGames } from './GameContext';
 
 interface CartItem {
   gameId: string;
@@ -33,6 +34,7 @@ export function useCart() {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { games, loading: gamesLoading } = useGames();
   const [cartGames, setCartGames] = useState<Game[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -54,34 +56,21 @@ export function CartProvider({ children }: CartProviderProps) {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
-  // Fetch games and calculate totals whenever cart changes
+  // Calculate totals whenever cart items or the main game list changes
   useEffect(() => {
-    const fetchGamesAndCalculateTotals = async () => {
-      try {
-        const games = await getActiveGames();
-        const gamesInCart = items.map(item => {
-          const game = games.find(g => g.id === item.gameId);
-          return game ? { ...game, quantity: item.quantity } : null;
-        }).filter(Boolean) as Game[];
-        
-        setCartGames(gamesInCart);
-        setTotalItems(items.reduce((total, item) => total + item.quantity, 0));
-        setTotalPrice(
-          gamesInCart.reduce(
-            (total, game) => {
-              const item = items.find(i => i.gameId === game.id);
-              return total + (game.price * (item?.quantity || 0));
-            }, 
-            0
-          )
-        );
-      } catch (error) {
-        console.error('Failed to fetch games:', error);
-      }
-    };
-
-    fetchGamesAndCalculateTotals();
-  }, [items]);
+    if (!gamesLoading && games.length > 0) {
+      const gamesInCart = items.map(item => {
+        const game = games.find(g => g.id === item.gameId);
+        return game ? { ...game, quantity: item.quantity } : null;
+      }).filter(Boolean) as (Game & { quantity: number })[];
+      
+      setCartGames(gamesInCart);
+      setTotalItems(items.reduce((total, item) => total + item.quantity, 0));
+      setTotalPrice(
+        gamesInCart.reduce((total, game) => total + (game.price * game.quantity), 0)
+      );
+    }
+  }, [items, games, gamesLoading]);
 
   const addToCart = (gameId: string) => {
     setItems(prevItems => {

@@ -193,21 +193,20 @@ const Navbar: React.FC = () => {
                 
                 <div className="pt-2 border-t border-secondary-600 flex items-center justify-between">
                   {isAuthenticated ? (
-                    <div className="flex flex-col space-y-2">
-                      <Link to="/my-products\" className="text-white hover:text-accent-400 py-2">
-                        <User className="w-5 h-5 inline mr-2" />
-                        {t('nav.myAccount')}
-                      </Link>
+                    <div className="flex items-center space-x-4">
                       <button
                         onClick={logout}
-                        className="text-white hover:text-accent-400 py-2 text-left"
+                        className="text-white hover:text-accent-400 text-sm"
                       >
                         {t('nav.logout')}
                       </button>
                     </div>
                   ) : (
                     <button
-                      onClick={() => setShowAuthModal(true)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setShowAuthModal(true);
+                      }}
                       className="text-white hover:text-accent-400 py-2"
                     >
                       {t('nav.signIn')}
