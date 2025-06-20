@@ -1,0 +1,41 @@
+name: Deploy to Staging
+
+# This workflow runs on any push to the 'develop' branch
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Use the latest version of Ubuntu for the runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # Checks out your repository under $GITHUB_WORKSPACE, so the workflow can access it
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify the Node.js version to use
+          cache: 'npm' # Cache npm dependencies to speed up subsequent builds
+
+      - name: Install dependencies
+        run: npm install
+        # Installs all the project dependencies from package-lock.json
+
+      - name: Build project
+        run: npm run build
+        # Runs the build script defined in package.json, which creates a 'dist' folder
+
+      - name: Deploy to ICD Hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /home/enigmamystery/www/staging
+          local-dir: ./dist/
+          # This action deploys the contents of the 'dist' folder to your server.
+          # You MUST configure the secrets in your GitHub repository settings. 
