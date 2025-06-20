@@ -36,9 +36,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps # Use Implicit FTPS
-          server-dir: /home/enigmamystery/www/staging/
+          server-dir: www/staging/
           local-dir: ./dist/
           security: loose
-          dangerous-clean-slate: true # Deletes files on the server that are not in the build
+          # dangerous-clean-slate: true # Temporarily disabled for path testing
           # This action deploys the contents of the 'dist' folder to your server.
-          # You MUST configure the secrets in your GitHub repository settings. 
+          # You MUST configure the secrets in your GitHub repository settings.
