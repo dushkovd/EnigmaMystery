@@ -38,5 +38,6 @@ jobs:
           protocol: ftps # Use Implicit FTPS
           server-dir: /home/enigmamystery/www/staging/public_html/
           local-dir: ./dist/
+          security: loose
           # This action deploys the contents of the 'dist' folder to your server.
           # You MUST configure the secrets in your GitHub repository settings. 
