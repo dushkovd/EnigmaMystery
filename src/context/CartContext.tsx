@@ -14,6 +14,7 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   cartGames: Game[];
+  refreshGames: () => Promise<void>;
 }
 
 interface CartProviderProps {
@@ -53,33 +54,33 @@ export function CartProvider({ children }: CartProviderProps) {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
-  // Calculate total items and price
+  // Fetch games and calculate totals whenever cart changes
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchGamesAndCalculateTotals = async () => {
       try {
         const games = await getActiveGames();
-      const gamesInCart = items.map(item => {
-        const game = games.find(g => g.id === item.gameId);
-        return game ? { ...game, quantity: item.quantity } : null;
-      }).filter(Boolean) as Game[];
-      
-      setCartGames(gamesInCart);
-      setTotalItems(items.reduce((total, item) => total + item.quantity, 0));
-      setTotalPrice(
-        gamesInCart.reduce(
-          (total, game) => {
-            const item = items.find(i => i.gameId === game.id);
-            return total + (game.price * (item?.quantity || 0));
-          }, 
-          0
-        )
-      );
+        const gamesInCart = items.map(item => {
+          const game = games.find(g => g.id === item.gameId);
+          return game ? { ...game, quantity: item.quantity } : null;
+        }).filter(Boolean) as Game[];
+        
+        setCartGames(gamesInCart);
+        setTotalItems(items.reduce((total, item) => total + item.quantity, 0));
+        setTotalPrice(
+          gamesInCart.reduce(
+            (total, game) => {
+              const item = items.find(i => i.gameId === game.id);
+              return total + (game.price * (item?.quantity || 0));
+            }, 
+            0
+          )
+        );
       } catch (error) {
-        console.error('Failed to fetch games for cart:', error);
+        console.error('Failed to fetch games:', error);
       }
     };
 
-    fetchGames();
+    fetchGamesAndCalculateTotals();
   }, [items]);
 
   const addToCart = (gameId: string) => {
@@ -116,6 +117,11 @@ export function CartProvider({ children }: CartProviderProps) {
     setItems([]);
   };
 
+  const refreshGames = async () => {
+    // This function is kept for compatibility but no longer needed
+    // as games are fetched on every cart change
+  };
+
   const value = {
     items,
     addToCart,
@@ -123,7 +129,8 @@ export function CartProvider({ children }: CartProviderProps) {
     clearCart,
     totalItems,
     totalPrice,
-    cartGames
+    cartGames,
+    refreshGames
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

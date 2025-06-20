@@ -24,28 +24,14 @@ const GameViewerPage: React.FC = () => {
   const [selectedVariationId, setSelectedVariationId] = useState<number | null>(null);
   const [showPlayerSelection, setShowPlayerSelection] = useState(false);
 
-  // Initialize game progress with a default game structure
+  // Initialize game progress with the actual game state
   const {
     currentScreen,
     goToNextScreen,
     goToPreviousScreen,
     isFirstScreen,
     isLastScreen
-  } = useGameProgress({
-    game_id: 0,
-    id: '0',
-    title: '',
-    subtitle: '',
-    description: '',
-    setting: '',
-    price: 0,
-    is_active: true,
-    image: '',
-    difficulty: 'Medium',
-    players: '',
-    duration: '',
-    variations: []
-  });
+  } = useGameProgress(game);
 
   // Fetch game info and variations only on mount
   useEffect(() => {
@@ -74,14 +60,15 @@ const GameViewerPage: React.FC = () => {
     fetchGameAndVariations();
   }, [gameId]);
 
-  // Update document title and URL
+  // Update document title, URL, and scroll to top on screen change
   useEffect(() => {
     if (game) {
       const title = language === 'bg' ? game.title_bg || game.title : game.title;
       document.title = `${title} | Enigma Mysteries`;
       navigate(`/game/${gameId}/${currentScreen}`, { replace: true });
+      window.scrollTo(0, 0);
     }
-  }, [game?.title, game?.title_bg, currentScreen, gameId, navigate, language]);
+  }, [game, currentScreen, gameId, navigate, language]);
 
   const handleVariationSelect = async (variationId: number) => {
     setSelectedVariationId(variationId);
@@ -179,6 +166,11 @@ const GameViewerPage: React.FC = () => {
     return <Navigate to="/checkout" />;
   }
 
+  const gameSteps = ['introduction', 'characters', 'round1', 'round2', 'round3', 'solution'];
+  const currentStepIndex = gameSteps.indexOf(currentScreen || 'introduction');
+  const totalSteps = gameSteps.length;
+  const progressPercentage = ((currentStepIndex + 1) / totalSteps) * 100;
+
   return (
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
@@ -193,26 +185,22 @@ const GameViewerPage: React.FC = () => {
             </Link>
           </div>
           
-          {/* Game Progress Tracker */}
+          {/* New Progress Bar UI */}
           <div className="mb-8">
-            <div className="bg-white rounded-lg shadow-md p-4 flex flex-col gap-2 sm:flex-row sm:gap-0 sm:justify-between overflow-x-auto">
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'introduction' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.introduction')}
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-medium text-secondary-700 capitalize">
+                  {currentScreen?.replace(/([A-Z])/g, ' $1') || 'Introduction'}
+                </h2>
+                <span className="text-sm font-medium text-primary-600">
+                  Step {currentStepIndex + 1} of {totalSteps}
+                </span>
               </div>
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'characters' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.characters')}
-              </div>
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'round1' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.round1')}
-              </div>
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'round2' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.round2')}
-              </div>
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'round3' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.round3')}
-              </div>
-              <div className={`text-center flex-1 min-w-[90px] ${currentScreen === 'solution' ? 'text-primary-600 font-medium' : 'text-secondary-500'}`}>
-                {t('game.solution')}
+              <div className="w-full bg-secondary-200 rounded-full h-2.5">
+                <div 
+                  className="bg-primary-600 h-2.5 rounded-full transition-all duration-500" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
               </div>
             </div>
           </div>

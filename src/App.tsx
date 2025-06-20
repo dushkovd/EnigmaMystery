@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { CurrencyProvider } from './context/CurrencyContext';
+import ScrollToTop from './components/layout/ScrollToTop';
 
 function App() {
   return (
@@ -20,18 +21,19 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <CurrencyProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/my-products" element={<MyProductsPage />} />
-              <Route path="/game/:gameId/:screen?" element={<GameViewerPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <ScrollToTop />
+            <Layout>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/shop" element={<ShopPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/my-products" element={<MyProductsPage />} />
+                <Route path="/game/:gameId/:screen?" element={<GameViewerPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/terms" element={<TermsPage />} />
-            </Routes>
-          </Layout>
+              </Routes>
+            </Layout>
           </CurrencyProvider>
         </CartProvider>
       </AuthProvider>

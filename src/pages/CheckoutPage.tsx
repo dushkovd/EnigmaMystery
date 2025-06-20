@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import PaymentForm from '../components/PaymentForm';
 import AuthForm from '../components/AuthForm';
+
+const PaymentForm = React.lazy(() => import('../components/PaymentForm'));
 
 const CheckoutPage: React.FC = () => {
   const { cartGames, totalPrice } = useCart();
@@ -14,15 +15,17 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const [authComplete, setAuthComplete] = React.useState(false);
   const [showRegister, setShowRegister] = React.useState(!isAuthenticated);
+  const [isProcessingPayment, setIsProcessingPayment] = React.useState(false);
 
   useEffect(() => {
     document.title = `${t('checkout.title')} | Enigma Mysteries`;
     
-    // If cart is empty, redirect to shop
-    if (cartGames.length === 0) {
+    // Only redirect to shop if cart is empty and user is not authenticated
+    // Authenticated users should stay on checkout page even with empty cart
+    if (cartGames.length === 0 && !isAuthenticated) {
       navigate('/shop');
     }
-  }, [cartGames.length, navigate, t]);
+  }, [cartGames.length, navigate, t, isAuthenticated]);
 
   // For now, we'll just use the first game in the cart
   const selectedGame = cartGames[0];
@@ -40,11 +43,14 @@ const CheckoutPage: React.FC = () => {
             {!isAuthenticated && !authComplete ? (
               <AuthForm onSuccess={() => setAuthComplete(true)} showRegister={showRegister} setShowRegister={setShowRegister} />
             ) : selectedGame && (
-              <PaymentForm 
-                gameId={selectedGame.id}
-                gameTitle={selectedGame.title}
-                price={selectedGame.price}
-              />
+              <Suspense fallback={<div className="text-center p-8">Loading payment form...</div>}>
+                <PaymentForm 
+                  gameId={selectedGame.id}
+                  gameTitle={selectedGame.title}
+                  price={selectedGame.price}
+                  onProcessingChange={setIsProcessingPayment}
+                />
+              </Suspense>
             )}
           </div>
         </motion.div>

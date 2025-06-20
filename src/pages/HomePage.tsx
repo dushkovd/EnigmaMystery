@@ -22,8 +22,9 @@ const HomePage: React.FC = () => {
     const fetchGames = async () => {
       try {
         const games = await getActiveGames();
-        // Set the first game as featured or null if no games
-        setFeaturedGame(games.length > 0 ? games[0] : null);
+        // Find the game with featured = true, or fall back to the first game
+        const featuredGame = games.find(game => game.featured) || (games.length > 0 ? games[0] : null);
+        setFeaturedGame(featuredGame);
       } catch (error) {
         console.error('Error fetching games:', error);
         setFeaturedGame(null);
@@ -107,7 +108,7 @@ const HomePage: React.FC = () => {
               {t('home.hero.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/shop" className="btn-accent text-lg">
+              <Link to="/shop" className="btn-accent text-lg" state={{ preventScroll: true }}>
                 {t('home.hero.exploreGames')}
               </Link>
               <a href="#how-it-works" className="btn-outline border-white text-white hover:bg-white/10 text-lg">
@@ -145,7 +146,7 @@ const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
             <div className="vintage-border">
               <div className="vintage-border-inner">
                   {loading ? (
@@ -160,7 +161,7 @@ const HomePage: React.FC = () => {
                 <motion.img 
                   src={featuredGame.image} 
                       alt={language === 'bg' ? featuredGame.title_bg || featuredGame.title : featuredGame.title}
-                  className="w-full h-auto rounded shadow-lg"
+                  className="w-full h-auto max-h-[450px] object-cover rounded shadow-lg"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -171,13 +172,12 @@ const HomePage: React.FC = () => {
             </div>
 
             <motion.div 
-              className="space-y-6"
+              className="space-y-4"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-                <span className="inline-block bg-primary-100 text-primary-600 px-3 py-1 text-sm font-medium rounded">{t('home.featured.badge')}</span>
                 <h3 className="font-display text-3xl font-bold">
                   {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
                 </h3>

@@ -1,61 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GameWithDetails } from '../api/games';
 
-type GameScreen = 'introduction' | 'characters' | 'round1' | 'round2' | 'round3' | 'solution';
-
-interface GameProgress {
-  currentScreen: GameScreen;
-  goToNextScreen: () => void;
-  goToPreviousScreen: () => void;
-  goToScreen: (screen: GameScreen) => void;
-  isFirstScreen: boolean;
-  isLastScreen: boolean;
-}
-
-export default function useGameProgress(game: GameWithDetails): GameProgress {
-  const [currentScreen, setCurrentScreen] = useState<GameScreen>('introduction');
-  const [isFirstScreen, setIsFirstScreen] = useState(true);
-  const [isLastScreen, setIsLastScreen] = useState(false);
-
-  const screens: GameScreen[] = ['introduction', 'characters', 'round1', 'round2', 'round3', 'solution'];
-
-  // Reset to introduction when game changes
-  useEffect(() => {
-    setCurrentScreen('introduction');
-  }, [game.game_id]);
+const useGameProgress = (game: GameWithDetails | null) => {
+  const [gameScreens, setGameScreens] = useState<string[]>(['introduction']);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const currentIndex = screens.indexOf(currentScreen);
-    setIsFirstScreen(currentIndex === 0);
-    setIsLastScreen(currentIndex === screens.length - 1);
-  }, [currentScreen]);
-
-  const goToNextScreen = () => {
-    const currentIndex = screens.indexOf(currentScreen);
-    if (currentIndex < screens.length - 1) {
-      setCurrentScreen(screens[currentIndex + 1]);
+    if (game && game.variations && game.variations.length > 0 && game.variations[0].rounds) {
+      const screens = ['introduction', 'characters'];
+      const rounds = game.variations[0].rounds.map((_, i) => `round${i + 1}`);
+      screens.push(...rounds);
+      screens.push('solution');
+      setGameScreens(screens);
+    } else {
+      setGameScreens(['introduction']);
     }
-  };
+    // Reset index when game changes to avoid being out of bounds
+    setCurrentIndex(0);
+  }, [game]);
 
-  const goToPreviousScreen = () => {
-    const currentIndex = screens.indexOf(currentScreen);
-    if (currentIndex > 0) {
-      setCurrentScreen(screens[currentIndex - 1]);
-    }
-  };
+  const goToNextScreen = useCallback(() => {
+    setCurrentIndex(prevIndex => Math.min(prevIndex + 1, gameScreens.length - 1));
+  }, [gameScreens.length]);
 
-  const goToScreen = (screen: GameScreen) => {
-    if (screens.includes(screen)) {
-      setCurrentScreen(screen);
-    }
-  };
+  const goToPreviousScreen = useCallback(() => {
+    setCurrentIndex(prevIndex => Math.max(prevIndex - 1, 0));
+  }, []);
+
+  const currentScreen = gameScreens[currentIndex] || 'introduction';
+  const isFirstScreen = currentIndex === 0;
+  const isLastScreen = currentIndex === gameScreens.length - 1;
 
   return {
     currentScreen,
     goToNextScreen,
     goToPreviousScreen,
-    goToScreen,
     isFirstScreen,
-    isLastScreen
+    isLastScreen,
   };
-}
+};
+
+export default useGameProgress;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   CardNumberElement,
@@ -17,16 +17,17 @@ import { useLanguage } from '../context/LanguageContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { formatPrice, getStripeCurrencyCode } from '../utils/currencyFormatter';
 
-// Initialize Stripe with your publishable key
+// Initialize Stripe with your publishable key - moved outside component to prevent re-initialization
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 interface PaymentFormProps {
   gameId: string;
   gameTitle: string;
   price: number;
+  onProcessingChange?: (isProcessing: boolean) => void;
 }
 
-const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, price }) => {
+const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, price, onProcessingChange }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +48,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
 
     setProcessing(true);
     setError(null);
+    onProcessingChange?.(true);
 
     try {
       // Create payment intent with the selected currency
@@ -129,18 +131,19 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
           throw new Error(t('checkout.orderItemError'));
         }
 
-        // Show success message
+        // Show success message and redirect immediately
         setSuccess(true);
         clearCart();
-        // Only redirect to /my-products after a short delay
+        // Small delay to ensure cart clearing completes before navigation
         setTimeout(() => {
           navigate('/my-products');
-        }, 2000);
+        }, 100);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('common.error'));
     } finally {
       setProcessing(false);
+      onProcessingChange?.(false);
     }
   };
 
@@ -246,6 +249,24 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
 };
 
 const PaymentForm: React.FC<PaymentFormProps> = (props) => {
+  const [stripeLoaded, setStripeLoaded] = useState(false);
+
+  // Only load Stripe when component mounts and user is ready to pay
+  React.useEffect(() => {
+    setStripeLoaded(true);
+  }, []);
+
+  if (!stripeLoaded) {
+    return (
+      <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+          <span className="ml-2">Loading payment form...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Elements stripe={stripePromise}>
       <PaymentFormContent {...props} />
