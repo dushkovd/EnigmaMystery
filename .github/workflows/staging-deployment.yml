@@ -36,9 +36,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps # Use Implicit FTPS
-          server-dir: www/staging/
+          server-dir: ./
           local-dir: ./dist/
           security: loose
-          # dangerous-clean-slate: true # Temporarily disabled for path testing
+          dangerous-clean-slate: true # Deletes files on the server that are not in the build
           # This action deploys the contents of the 'dist' folder to your server.
           # You MUST configure the secrets in your GitHub repository settings.
