@@ -53,7 +53,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
     try {
       // Create payment intent with the selected currency
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_FUNCTION_URL}/create-payment-intent`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`,
         {
           method: 'POST',
           headers: {
