@@ -19,6 +19,8 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
   
   const getName = (character: Character) => language === 'bg' ? character.name_bg || character.name : character.name;
   const getSecret = (character: Character) => language === 'bg' ? character.secret_bg || character.secret : character.secret;
+  const getConnection = (character: Character) => language === 'bg' ? character.connection_bg || character.connection : character.connection;
+  const getCircumstances = (character: Character) => language === 'bg' ? character.circumstances_bg || character.circumstances : character.circumstances;
 
   return (
     <AnimatePresence>
@@ -34,7 +36,7 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
           >
             {/* Modal */}
             <motion.div
-              className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative"
+              className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto"
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -47,21 +49,49 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
                 <X className="w-5 h-5" />
               </button>
               
-              <div className="mb-4">
+              <div className="mb-6">
                 <h3 className="text-xl font-display font-bold text-secondary-800 mb-2">
                   {getName(character)}
                 </h3>
                 <div className="w-12 h-1 bg-primary-600 mb-4"></div>
               </div>
               
-              <div className="mb-6">
-                <h4 className="font-medium text-secondary-700 mb-2">{t('game.secret')}</h4>
-                <p className="text-secondary-600 leading-relaxed">
-                  {getSecret(character)}
-                </p>
+              <div className="space-y-6">
+                {/* Secret Section */}
+                <div>
+                  <h4 className="font-medium text-secondary-700 mb-2 flex items-center">
+                    <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                    {t('game.secret')}
+                  </h4>
+                  <p className="text-secondary-600 leading-relaxed bg-red-50 p-3 rounded-lg border-l-4 border-red-500">
+                    {getSecret(character)}
+                  </p>
+                </div>
+                
+                {/* Connection Section */}
+                <div>
+                  <h4 className="font-medium text-secondary-700 mb-2 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                    {t('game.connection')}
+                  </h4>
+                  <p className="text-secondary-600 leading-relaxed bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+                    {getConnection(character)}
+                  </p>
+                </div>
+                
+                {/* Circumstances Section */}
+                <div>
+                  <h4 className="font-medium text-secondary-700 mb-2 flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    {t('game.circumstances')}
+                  </h4>
+                  <p className="text-secondary-600 leading-relaxed bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                    {getCircumstances(character)}
+                  </p>
+                </div>
               </div>
               
-              <div className="text-center">
+              <div className="text-center mt-6">
                 <button
                   onClick={onClose}
                   className="btn-primary px-6 py-2"

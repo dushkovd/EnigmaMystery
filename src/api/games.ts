@@ -38,14 +38,17 @@ export interface GameVariation {
 
 export interface Character {
   character_id: number;
-  variation_id: number;
   name: string;
   description: string;
   secret: string;
+  connection: string;
+  circumstances: string;
   // Bulgarian fields
   name_bg?: string;
   description_bg?: string;
   secret_bg?: string;
+  connection_bg?: string;
+  circumstances_bg?: string;
 }
 
 export interface Round {
@@ -207,16 +210,37 @@ export const getGameById = async (gameId: number): Promise<GameWithDetails | nul
     variations.map(async (variation) => {
       console.log('Processing variation:', variation.variation_id);
       
-      // Get characters
-      const { data: characters, error: charactersError } = await supabase
-        .from('Characters')
-        .select('*')
+      // Get characters through junction table
+      const { data: characterVariations, error: characterVariationsError } = await supabase
+        .from('Character_Variations')
+        .select(`
+          character_id,
+          Characters (
+            character_id,
+            name,
+            name_bg,
+            description,
+            description_bg,
+            secret,
+            secret_bg,
+            connection,
+            connection_bg,
+            circumstances,
+            circumstances_bg
+          )
+        `)
         .eq('variation_id', variation.variation_id);
 
-      if (charactersError) {
-        console.error('Error fetching characters:', charactersError);
-        throw charactersError;
+      if (characterVariationsError) {
+        console.error('Error fetching character variations:', characterVariationsError);
+        throw characterVariationsError;
       }
+      
+      const characters = characterVariations
+        .map(cv => cv.Characters)
+        .filter(Boolean)
+        .flat() as Character[];
+      
       console.log('Characters for variation:', variation.variation_id, characters);
 
       // Get rounds
@@ -232,19 +256,31 @@ export const getGameById = async (gameId: number): Promise<GameWithDetails | nul
       }
       console.log('Rounds for variation:', variation.variation_id, rounds);
 
-      // Get clues for each round
+      // Get clues for each round through junction table
       const roundsWithClues = await Promise.all(
         rounds.map(async (round) => {
-          const { data: clues, error: cluesError } = await supabase
-            .from('Clues')
-            .select('*')
+          const { data: clueRounds, error: clueRoundsError } = await supabase
+            .from('Clue_Rounds')
+            .select(`
+              clue_number,
+              Clues (
+                clue_id,
+                content,
+                content_bg
+              )
+            `)
             .eq('round_id', round.round_id)
             .order('clue_number');
 
-          if (cluesError) {
-            console.error('Error fetching clues:', cluesError);
-            throw cluesError;
+          if (clueRoundsError) {
+            console.error('Error fetching clue rounds:', clueRoundsError);
+            throw clueRoundsError;
           }
+          
+          const clues = clueRounds
+            .map(cr => ({ ...cr.Clues, clue_number: cr.clue_number }))
+            .filter(Boolean);
+          
           console.log('Clues for round:', round.round_id, clues);
           return { ...round, clues };
         })
@@ -282,27 +318,102 @@ export const getGameById = async (gameId: number): Promise<GameWithDetails | nul
 
 // Fetch a specific variation of a game
 export const getGameVariation = async (variationId: number) => {
-  const { data, error } = await supabase
+  // Get the variation
+  const { data: variation, error: variationError } = await supabase
     .from('Game_Variations')
-    .select(`
-      *,
-      game:Games(*),
-      characters:Characters(*),
-      rounds:Rounds(
-        *,
-        clues:Clues(*)
-      ),
-      final_reveal:Final_Reveal(*)
-    `)
+    .select('*')
     .eq('variation_id', variationId)
     .single();
 
-  if (error) throw error;
-  
-  // Transform the game data
+  if (variationError) throw variationError;
+
+  // Get the game
+  const { data: game, error: gameError } = await supabase
+    .from('Games')
+    .select('*')
+    .eq('game_id', variation.game_id)
+    .single();
+
+  if (gameError) throw gameError;
+
+  // Get characters through junction table
+  const { data: characterVariations, error: characterVariationsError } = await supabase
+    .from('Character_Variations')
+    .select(`
+      character_id,
+      Characters (
+        character_id,
+        name,
+        name_bg,
+        description,
+        description_bg,
+        secret,
+        secret_bg,
+        connection,
+        connection_bg,
+        circumstances,
+        circumstances_bg
+      )
+    `)
+    .eq('variation_id', variationId);
+
+  if (characterVariationsError) throw characterVariationsError;
+
+  const characters = characterVariations
+    .map(cv => cv.Characters)
+    .filter(Boolean)
+    .flat() as Character[];
+
+  // Get rounds
+  const { data: rounds, error: roundsError } = await supabase
+    .from('Rounds')
+    .select('*')
+    .eq('variation_id', variationId)
+    .order('round_number');
+
+  if (roundsError) throw roundsError;
+
+  // Get clues for each round through junction table
+  const roundsWithClues = await Promise.all(
+    rounds.map(async (round) => {
+      const { data: clueRounds, error: clueRoundsError } = await supabase
+        .from('Clue_Rounds')
+        .select(`
+          clue_number,
+          Clues (
+            clue_id,
+            content,
+            content_bg
+          )
+        `)
+        .eq('round_id', round.round_id)
+        .order('clue_number');
+
+      if (clueRoundsError) throw clueRoundsError;
+
+      const clues = clueRounds
+        .map(cr => ({ ...cr.Clues, clue_number: cr.clue_number }))
+        .filter(Boolean);
+
+      return { ...round, clues };
+    })
+  );
+
+  // Get final reveal
+  const { data: finalReveal, error: finalRevealError } = await supabase
+    .from('Final_Reveal')
+    .select('*')
+    .eq('variation_id', variationId)
+    .single();
+
+  if (finalRevealError) throw finalRevealError;
+
   return {
-    ...data,
-    game: transformGameData(data.game)
+    ...variation,
+    game: transformGameData(game),
+    characters,
+    rounds: roundsWithClues,
+    final_reveal: finalReveal
   };
 };
 
