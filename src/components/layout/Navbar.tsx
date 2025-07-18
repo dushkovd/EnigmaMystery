@@ -35,6 +35,32 @@ const Navbar: React.FC = () => {
     setIsOpen(false);
   }, [location]);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: Event) => {
+      const target = event.target as Element;
+      const mobileMenu = document.querySelector('.mobile-menu');
+      const mobileMenuButton = document.querySelector('.mobile-menu-button');
+      
+      if (isOpen && mobileMenu && mobileMenuButton) {
+        // Check if click is outside both the menu and the button
+        if (!mobileMenu.contains(target) && !mobileMenuButton.contains(target)) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'bg' : 'en');
     setShowLanguageMenu(false);
@@ -48,7 +74,7 @@ const Navbar: React.FC = () => {
     <>
       <header 
         className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-secondary-800 shadow-lg' : 'bg-transparent'
+          isScrolled ? 'bg-secondary-800 shadow-lg' : 'bg-secondary-800/95 backdrop-blur-sm'
         }`}
       >
         <div className="container-custom py-4">
@@ -149,7 +175,7 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-white focus:outline-none"
+              className="mobile-menu-button md:hidden text-white focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -161,7 +187,7 @@ const Navbar: React.FC = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="md:hidden bg-secondary-700 absolute w-full"
+              className="mobile-menu md:hidden bg-secondary-700 absolute w-full"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}

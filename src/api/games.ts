@@ -67,6 +67,7 @@ export interface Clue {
   round_id: number;
   clue_number: number;
   content: string;
+  hidden?: boolean;
   // Bulgarian fields
   content_bg?: string;
 }
@@ -266,7 +267,8 @@ export const getGameById = async (gameId: number): Promise<GameWithDetails | nul
               Clues (
                 clue_id,
                 content,
-                content_bg
+                content_bg,
+                hidden
               )
             `)
             .eq('round_id', round.round_id)
@@ -279,7 +281,8 @@ export const getGameById = async (gameId: number): Promise<GameWithDetails | nul
           
           const clues = clueRounds
             .map(cr => ({ ...cr.Clues, clue_number: cr.clue_number }))
-            .filter(Boolean);
+            .filter(Boolean)
+            .filter((clue: any) => !clue.hidden); // Filter out hidden clues
           
           console.log('Clues for round:', round.round_id, clues);
           return { ...round, clues };
@@ -383,7 +386,8 @@ export const getGameVariation = async (variationId: number) => {
           Clues (
             clue_id,
             content,
-            content_bg
+            content_bg,
+            hidden
           )
         `)
         .eq('round_id', round.round_id)
@@ -393,7 +397,8 @@ export const getGameVariation = async (variationId: number) => {
 
       const clues = clueRounds
         .map(cr => ({ ...cr.Clues, clue_number: cr.clue_number }))
-        .filter(Boolean);
+        .filter(Boolean)
+        .filter((clue: any) => !clue.hidden); // Filter out hidden clues
 
       return { ...round, clues };
     })
@@ -415,6 +420,75 @@ export const getGameVariation = async (variationId: number) => {
     rounds: roundsWithClues,
     final_reveal: finalReveal
   };
+};
+
+// Get the largest variation (most players) for a game
+export const getLargestGameVariation = async (gameId: number) => {
+  try {
+    // Get all variations for this game, ordered by number of players descending
+    const { data: variations, error } = await supabase
+      .from('Game_Variations')
+      .select(`
+        variation_id,
+        game_id,
+        num_players,
+        variation_title,
+        notes
+      `)
+      .eq('game_id', gameId)
+      .order('num_players', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error('Error fetching largest variation:', error);
+      return null;
+    }
+
+    if (!variations || variations.length === 0) {
+      return null;
+    }
+
+    const largestVariation = variations[0];
+
+    // Get characters for this variation
+    const { data: characterVariations, error: characterError } = await supabase
+      .from('Character_Variations')
+      .select(`
+        character_id,
+        Characters (
+          character_id,
+          name,
+          name_bg,
+          description,
+          description_bg,
+          secret,
+          secret_bg,
+          connection,
+          connection_bg,
+          circumstances,
+          circumstances_bg
+        )
+      `)
+      .eq('variation_id', largestVariation.variation_id);
+
+    if (characterError) {
+      console.error('Error fetching characters:', characterError);
+      return null;
+    }
+
+    const characters = characterVariations
+      .map(cv => cv.Characters)
+      .filter(Boolean)
+      .flat() as Character[];
+
+    return {
+      ...largestVariation,
+      characters
+    };
+  } catch (error) {
+    console.error('Error in getLargestGameVariation:', error);
+    return null;
+  }
 };
 
 // Fetch user's purchased games

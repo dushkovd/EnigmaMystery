@@ -66,9 +66,6 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
               <div className="font-display font-medium">
                 {variation.num_players} {t('game.players')}
               </div>
-              <div className="text-sm text-secondary-600">
-                {language === 'bg' ? variation.variation_title_bg || variation.variation_title : variation.variation_title}
-              </div>
             </button>
           ))}
         </div>

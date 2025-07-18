@@ -7,6 +7,7 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import MyProductsPage from './pages/MyProductsPage';
 import GameViewerPage from './pages/GameViewerPage';
+import GamePreviewPage from './pages/GamePreviewPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import TermsPage from './pages/TermsPage';
 import FaqPage from './pages/FaqPage';
@@ -33,6 +34,7 @@ function App() {
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/my-products" element={<MyProductsPage />} />
                   <Route path="/game/:gameId/:screen?" element={<GameViewerPage />} />
+                  <Route path="/preview/:gameId" element={<GamePreviewPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
                   <Route path="/terms" element={<TermsPage />} />
                   <Route path="/faq" element={<FaqPage />} />

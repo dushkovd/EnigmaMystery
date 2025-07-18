@@ -66,27 +66,40 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
                   <p className="text-secondary-600 leading-relaxed bg-red-50 p-3 rounded-lg border-l-4 border-red-500">
                     {getSecret(character)}
                   </p>
-                </div>
-                
-                {/* Connection Section */}
-                <div>
-                  <h4 className="font-medium text-secondary-700 mb-2 flex items-center">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                    {t('game.connection')}
-                  </h4>
-                  <p className="text-secondary-600 leading-relaxed bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
-                    {getConnection(character)}
+                  <p className="text-xs text-red-600 mt-2 italic">
+                    {language === 'bg' ? '⚠️ Не споделяйте с другите!' : '⚠️ Do not share with others!'}
                   </p>
                 </div>
                 
-                {/* Circumstances Section */}
+                {/* Public Information Section */}
                 <div>
                   <h4 className="font-medium text-secondary-700 mb-2 flex items-center">
                     <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                    {t('game.circumstances')}
+                    {language === 'bg' ? 'Публична информация' : 'Public Information'}
                   </h4>
-                  <p className="text-secondary-600 leading-relaxed bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
-                    {getCircumstances(character)}
+                  <div className="space-y-3">
+                    {/* Connection Section */}
+                    <div>
+                      <h5 className="font-medium text-secondary-600 mb-1">
+                        {t('game.connection')}
+                      </h5>
+                      <p className="text-secondary-600 leading-relaxed bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                        {getConnection(character)}
+                      </p>
+                    </div>
+                    
+                    {/* Circumstances Section */}
+                    <div>
+                      <h5 className="font-medium text-secondary-600 mb-1">
+                        {t('game.circumstances')}
+                      </h5>
+                      <p className="text-secondary-600 leading-relaxed bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                        {getCircumstances(character)}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-green-600 mt-2 italic">
+                    {language === 'bg' ? '✅ Може да се сподели с другите' : '✅ Can be shared with others'}
                   </p>
                 </div>
               </div>

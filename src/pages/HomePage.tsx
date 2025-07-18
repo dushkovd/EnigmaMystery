@@ -36,20 +36,27 @@ const HomePage: React.FC = () => {
     const isInCart = cartGames.some(game => game.id === featuredGame.id);
 
     return (
-      <div className="flex items-center space-x-4 pt-4">
+      <div className="flex items-center justify-between pt-4">
         <span className="text-2xl font-bold">
           {formatPrice(featuredGame.price, language)}
         </span>
-        <button
-          onClick={() => handleAddToCart(featuredGame)}
-          className={`btn-primary flex items-center gap-2 ${
-            isInCart ? 'bg-secondary-500' : ''
-          }`}
-          disabled={isInCart}
-        >
-          <ShoppingCart className="w-5 h-5" />
-          {isInCart ? t('shop.inCart') : t('shop.addToCart')}
-        </button>
+        {isInCart ? (
+          <button
+            onClick={() => navigate('/cart')}
+            className="btn-primary flex items-center gap-2"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {t('shop.inCart')}
+          </button>
+        ) : (
+          <button
+            onClick={() => handleAddToCart(featuredGame)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {t('shop.addToCart')}
+          </button>
+        )}
       </div>
     );
   };
@@ -135,7 +142,7 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
-            <div className="vintage-border">
+            <Link to={`/preview/${featuredGame.game_id}`} className="vintage-border block">
               <div className="vintage-border-inner">
                   {loading ? (
                     <div className="flex items-center justify-center h-full">
@@ -149,7 +156,7 @@ const HomePage: React.FC = () => {
                 <motion.img 
                   src={featuredGame.image} 
                       alt={language === 'bg' ? featuredGame.title_bg || featuredGame.title : featuredGame.title}
-                  className="w-full h-auto max-h-[450px] object-cover rounded shadow-lg"
+                  className="w-full h-auto max-h-[450px] object-cover rounded shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -157,7 +164,7 @@ const HomePage: React.FC = () => {
                 />
                   ) : null}
               </div>
-            </div>
+            </Link>
 
             <motion.div 
               className="space-y-4"
@@ -166,9 +173,11 @@ const HomePage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-                <h3 className="font-display text-3xl font-bold">
-                  {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
-                </h3>
+                <Link to={`/preview/${featuredGame.game_id}`} className="block">
+                  <h3 className="font-display text-3xl font-bold hover:text-primary-600 transition-colors cursor-pointer">
+                    {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
+                  </h3>
+                </Link>
                 <p className="text-lg italic text-primary-600">
                   {language === 'bg' ? featuredGame?.subtitle_bg || featuredGame?.subtitle : featuredGame?.subtitle}
                 </p>
@@ -223,7 +232,7 @@ const HomePage: React.FC = () => {
             >
               <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
               <h3 className="text-xl font-display font-bold mb-2">{t('home.howItWorks.step1.title')}</h3>
@@ -261,13 +270,97 @@ const HomePage: React.FC = () => {
             >
               <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <h3 className="text-xl font-display font-bold mb-2">{t('home.howItWorks.step3.title')}</h3>
               <p className="text-secondary-600">
                 {t('home.howItWorks.step3.desc')}
               </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Advantages Section */}
+      <section className="section bg-white">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('home.advantages.title')}</h2>
+            <div className="w-24 h-1 bg-accent-500 mx-auto mb-6"></div>
+            <p className="text-secondary-600 max-w-2xl mx-auto">
+              {t('home.advantages.subtitle')}
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {/* Advantage 1: No Passive Roles */}
+            <motion.div 
+              className="flex flex-col lg:flex-row items-center gap-8 p-8 bg-accent-50 rounded-2xl border border-accent-200"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 bg-accent-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.noPassive.title')}</h3>
+                <p className="text-secondary-700 text-lg leading-relaxed">
+                  {t('home.advantages.noPassive.desc')}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Advantage 2: Amnesiac Murderer */}
+            <motion.div 
+              className="flex flex-col lg:flex-row items-center gap-8 p-8 bg-accent-50 rounded-2xl border border-accent-200"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 bg-accent-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.amnesia.title')}</h3>
+                <p className="text-secondary-700 text-lg leading-relaxed">
+                  {t('home.advantages.amnesia.desc')}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Advantage 3: Digital Convenience */}
+            <motion.div 
+              className="flex flex-col lg:flex-row items-center gap-8 p-8 bg-accent-50 rounded-2xl border border-accent-200"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 bg-accent-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.digital.title')}</h3>
+                <p className="text-secondary-700 text-lg leading-relaxed">
+                  {t('home.advantages.digital.desc')}
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -309,97 +402,193 @@ const HomePage: React.FC = () => {
             <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Testimonial 1 */}
-            <motion.div 
-              className="bg-white p-6 rounded-lg shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
-                    <span className="font-display font-bold text-primary-700">JM</span>
+          {language === 'bg' ? (
+            /* Bulgarian Reviews */
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Bulgarian Testimonial 1 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">МП</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Мария</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-bold">Jennifer M.</h4>
-                  <div className="flex text-accent-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <p className="text-secondary-600">
-                "Our book club decided to try something different, and the 'Death at Rosewood Estate' game was perfect! Easy to set up, and everyone got into character. We're already planning our next mystery night!"
-              </p>
-            </motion.div>
+                <p className="text-secondary-600">
+                  "С приятелите ми решихме да изпробваме мистерията от Ориент Експрес, която не ни разочарова! Доста се вживяхме в играта, доста поспорихме и накрая почти познахме убиеца..."
+                </p>
+              </motion.div>
 
-            {/* Testimonial 2 */}
-            <motion.div 
-              className="bg-white p-6 rounded-lg shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
-                    <span className="font-display font-bold text-primary-700">TR</span>
+              {/* Bulgarian Testimonial 2 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">ТР</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Тодор</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-bold">Thomas R.</h4>
-                  <div className="flex text-accent-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <p className="text-secondary-600">
-                "I hosted 'Murder on the Midnight Express' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
-              </p>
-            </motion.div>
+                <p className="text-secondary-600">
+                  "Хареса ми, че не беше нужно да губим време в сетъпване и четене на правила, а всичко беше готово и директно започнахме играта."
+                </p>
+              </motion.div>
 
-            {/* Testimonial 3 */}
-            <motion.div 
-              className="bg-white p-6 rounded-lg shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="mr-4">
-                  <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
-                    <span className="font-display font-bold text-primary-700">AL</span>
+              {/* Bulgarian Testimonial 3 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">АЛ</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Наско</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-bold">Amelia L.</h4>
-                  <div className="flex text-accent-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
+                <p className="text-secondary-600">
+                  "Като за по няма и 5 лв на човек, останахме прилично доволни от двучасовото занимание!"
+                </p>
+              </motion.div>
+            </div>
+          ) : (
+            /* English Reviews */
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* English Testimonial 1 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">JM</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Jennifer M.</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p className="text-secondary-600">
-                "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Death at Rosewood Estate' was our favorite so far!"
-              </p>
-            </motion.div>
-          </div>
+                <p className="text-secondary-600">
+                  "Our book club decided to try something different, and the 'Death at Rosewood Estate' game was perfect! Easy to set up, and everyone got into character. We're already planning our next mystery night!"
+                </p>
+              </motion.div>
+
+              {/* English Testimonial 2 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">TR</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Thomas R.</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-secondary-600">
+                  "I hosted 'Murder on the Midnight Express' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
+                </p>
+              </motion.div>
+
+              {/* English Testimonial 3 */}
+              <motion.div 
+                className="bg-white p-6 rounded-lg shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-4">
+                    <div className="w-12 h-12 bg-primary-200 rounded-full flex items-center justify-center">
+                      <span className="font-display font-bold text-primary-700">AL</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Amelia L.</h4>
+                    <div className="flex text-accent-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-secondary-600">
+                  "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Death at Rosewood Estate' was our favorite so far!"
+                </p>
+              </motion.div>
+            </div>
+          )}
         </div>
       </section>
     </div>

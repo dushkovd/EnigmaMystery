@@ -7,13 +7,13 @@ const useGameProgress = (game: GameWithDetails | null) => {
 
   useEffect(() => {
     if (game && game.variations && game.variations.length > 0 && game.variations[0].rounds) {
-      const screens = ['introduction', 'characters'];
+      const screens = ['rules', 'introduction', 'characters'];
       const rounds = game.variations[0].rounds.map((_, i) => `round${i + 1}`);
       screens.push(...rounds);
       screens.push('solution');
       setGameScreens(screens);
     } else {
-      setGameScreens(['introduction']);
+      setGameScreens(['rules']);
     }
     // Reset index when game changes to avoid being out of bounds
     setCurrentIndex(0);
@@ -27,7 +27,7 @@ const useGameProgress = (game: GameWithDetails | null) => {
     setCurrentIndex(prevIndex => Math.max(prevIndex - 1, 0));
   }, []);
 
-  const currentScreen = gameScreens[currentIndex] || 'introduction';
+  const currentScreen = gameScreens[currentIndex] || 'rules';
   const isFirstScreen = currentIndex === 0;
   const isLastScreen = currentIndex === gameScreens.length - 1;
 

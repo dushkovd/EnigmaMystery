@@ -131,6 +131,46 @@ export const getGameImageUrl = (imagePath: string): string => {
 };
 
 /**
+ * Get all images from a game's folder
+ * @param gameId - The game ID
+ * @returns Promise<string[]> - Array of image URLs
+ */
+export const getGameImages = async (gameId: number): Promise<string[]> => {
+  try {
+    // List all files in the game's folder
+    const { data: files, error } = await supabase.storage
+      .from('game-images')
+      .list(`${gameId}/`);
+
+    if (error) {
+      console.error('Error listing game images:', error);
+      return [];
+    }
+
+    if (!files || files.length === 0) {
+      return [];
+    }
+
+    // Filter for image files and get their URLs
+    const imageFiles = files.filter(file => 
+      file.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(file.name)
+    );
+
+    const imageUrls = imageFiles.map(file => {
+      const { data } = supabase.storage
+        .from('game-images')
+        .getPublicUrl(`${gameId}/${file.name}`);
+      return data.publicUrl;
+    });
+
+    return imageUrls;
+  } catch (error) {
+    console.error('Error getting game images:', error);
+    return [];
+  }
+};
+
+/**
  * Update a game's image in the database
  * @param gameId - The game ID
  * @param imagePath - The new image path

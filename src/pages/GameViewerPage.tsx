@@ -11,6 +11,8 @@ import CharactersScreen from '../components/game/CharactersScreen';
 import CluesScreen from '../components/game/CluesScreen';
 import SolutionScreen from '../components/game/SolutionScreen';
 import PlayerSelectionModal from '../components/game/PlayerSelectionModal';
+import SecretRevealScreen from '../components/game/SecretRevealScreen';
+import GameRulesScreen from '../components/game/GameRulesScreen';
 
 const GameViewerPage: React.FC = () => {
   const { gameId, screen } = useParams<{ gameId: string, screen?: string }>();
@@ -32,6 +34,29 @@ const GameViewerPage: React.FC = () => {
     isFirstScreen,
     isLastScreen
   } = useGameProgress(game);
+
+  // Get the selected variation
+  const selectedVariation = game?.variations?.find(v => v.variation_id === selectedVariationId);
+
+  // Dynamically generate game steps based on selected variation
+  const gameSteps = React.useMemo(() => {
+    if (!selectedVariation) return ['rules', 'introduction', 'characters', 'solution'];
+    
+    // Sort rounds by ID to ensure correct order
+    const sortedRounds = [...selectedVariation.rounds].sort((a, b) => a.round_id - b.round_id);
+    
+    return [
+      'rules',
+      'introduction',
+      'characters',
+      ...sortedRounds.map((_, i) => `round${i + 1}`),
+      'solution'
+    ];
+  }, [selectedVariation]);
+
+  const currentStepIndex = gameSteps.indexOf(currentScreen || 'introduction');
+  const totalSteps = gameSteps.length;
+  const progressPercentage = ((currentStepIndex + 1) / totalSteps) * 100;
 
   // Fetch game info and variations only on mount
   useEffect(() => {
@@ -86,6 +111,41 @@ const GameViewerPage: React.FC = () => {
     }
   };
 
+  const getStartingClueNumber = (roundIndex: number) => {
+    if (!selectedVariation) return 1;
+    
+    // Sort rounds by ID to ensure correct order
+    const sortedRounds = [...selectedVariation.rounds].sort((a, b) => a.round_id - b.round_id);
+    
+    let count = 1;
+    for (let i = 0; i < roundIndex; i++) {
+      count += sortedRounds[i]?.clues?.length || 0;
+    }
+    return count;
+  };
+
+  // Get translated screen name for progress bar
+  const getTranslatedScreenName = () => {
+    if (!selectedVariation) return t('game.rules');
+    
+    if (currentScreen === 'rules') return t('game.rules');
+    if (currentScreen === 'introduction') return t('game.introduction');
+    if (currentScreen === 'characters') return t('game.characters');
+    if (currentScreen === 'solution') return t('game.solution');
+    
+    // Handle rounds dynamically
+    const roundIndex = gameSteps.findIndex(s => s === currentScreen) - 3;
+    
+    // Sort rounds by ID to ensure correct order
+    const sortedRounds = [...selectedVariation.rounds].sort((a, b) => a.round_id - b.round_id);
+    const round = sortedRounds[roundIndex];
+    if (round) {
+      return language === 'bg' ? round.title_bg || round.title : round.title;
+    }
+    
+    return currentScreen?.replace(/([A-Z])/g, ' $1') || t('game.introduction');
+  };
+
   // Render loading state
   if (loading) {
     return (
@@ -113,22 +173,31 @@ const GameViewerPage: React.FC = () => {
     );
   }
 
-  // Get the selected variation
-  const selectedVariation = game?.variations?.find(v => v.variation_id === selectedVariationId);
-
-  const getStartingClueNumber = (roundIndex: number) => {
-    if (!selectedVariation) return 1;
-    let count = 1;
-    for (let i = 0; i < roundIndex; i++) {
-      count += selectedVariation.rounds[i]?.clues?.length || 0;
+  // Render game content
+  type RoundType = 'clue' | 'secret';
+  const getRoundType = (round: any): RoundType => {
+    // Check for specific round types based on title or round_type field
+    const title = round.title?.toLowerCase() || '';
+    const titleBg = round.title_bg?.toLowerCase() || '';
+    
+    // If round has a round_type field, use that
+    if (round.round_type) {
+      return round.round_type === 'secret' ? 'secret' : 'clue';
     }
-    return count;
+    
+    // Check for secret revelation keywords in both languages
+    const secretKeywords = ['secret', 'revelation', 'reveal', 'тайна', 'разкриване', 'разкрива'];
+    const hasSecretKeyword = secretKeywords.some(keyword => 
+      title.includes(keyword) || titleBg.includes(keyword)
+    );
+    
+    if (hasSecretKeyword) return 'secret';
+    
+    // Default to clue round
+    return 'clue';
   };
 
-  // Render game content
   const renderScreen = () => {
-    console.log('Selected variation:', selectedVariation, 'Selected variationId:', selectedVariationId);
-    console.log('selectedVariation.final_reveal:', selectedVariation?.final_reveal);
     if (!selectedVariation) {
       return (
         <div className="mystery-paper p-6 rounded-lg">
@@ -139,25 +208,38 @@ const GameViewerPage: React.FC = () => {
       );
     }
 
-    switch (currentScreen) {
-      case 'introduction':
-        return <IntroductionScreen game={game} variationId={selectedVariationId || undefined} />;
-      case 'characters':
-        return <CharactersScreen characters={selectedVariation.characters} />;
-      case 'round1':
-        return <CluesScreen round={selectedVariation.rounds[0]} startingClueNumber={getStartingClueNumber(0)} />;
-      case 'round2':
-        return <CluesScreen round={selectedVariation.rounds[1]} startingClueNumber={getStartingClueNumber(1)} />;
-      case 'round3':
-        return <CluesScreen round={selectedVariation.rounds[2]} startingClueNumber={getStartingClueNumber(2)} />;
-      case 'solution':
-        // If final_reveal is an array, use the first element; otherwise, use as is
-        const finalReveal = Array.isArray(selectedVariation.final_reveal)
-          ? selectedVariation.final_reveal[0]
-          : selectedVariation.final_reveal;
-        return <SolutionScreen solution={finalReveal} />;
-      default:
-        return <IntroductionScreen game={game} variationId={selectedVariationId || undefined} />;
+    if (currentScreen === 'rules')
+      return <GameRulesScreen />;
+    if (currentScreen === 'introduction')
+      return <IntroductionScreen game={game} variationId={selectedVariationId || undefined} />;
+    if (currentScreen === 'characters')
+      return <CharactersScreen characters={selectedVariation.characters} />;
+    if (currentScreen === 'solution') {
+      const finalReveal = Array.isArray(selectedVariation.final_reveal)
+        ? selectedVariation.final_reveal[0]
+        : selectedVariation.final_reveal;
+      return <SolutionScreen solution={finalReveal} />;
+    }
+
+    // Handle rounds dynamically
+    const roundIndex = gameSteps.findIndex(s => s === currentScreen) - 3;
+    
+    // Sort rounds by ID to ensure correct order
+    const sortedRounds = [...selectedVariation.rounds].sort((a, b) => a.round_id - b.round_id);
+    
+    // Debug: Log the round order
+    console.log('Round order:', sortedRounds.map(r => `${r.round_id}: ${r.title}`));
+    console.log('Current round index:', roundIndex);
+    console.log('Current screen:', currentScreen);
+    console.log('Game steps:', gameSteps);
+    
+    const round = sortedRounds[roundIndex];
+    if (!round) return null;
+
+    if (getRoundType(round) === 'secret') {
+      return <SecretRevealScreen round={round} characters={selectedVariation.characters} />;
+    } else {
+      return <CluesScreen round={round} startingClueNumber={getStartingClueNumber(roundIndex)} />;
     }
   };
 
@@ -165,11 +247,6 @@ const GameViewerPage: React.FC = () => {
   if (!isAuthenticated) {
     return <Navigate to="/checkout" />;
   }
-
-  const gameSteps = ['introduction', 'characters', 'round1', 'round2', 'round3', 'solution'];
-  const currentStepIndex = gameSteps.indexOf(currentScreen || 'introduction');
-  const totalSteps = gameSteps.length;
-  const progressPercentage = ((currentStepIndex + 1) / totalSteps) * 100;
 
   return (
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
@@ -190,10 +267,10 @@ const GameViewerPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-md p-4">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-medium text-secondary-700 capitalize">
-                  {currentScreen?.replace(/([A-Z])/g, ' $1') || 'Introduction'}
+                  {getTranslatedScreenName()}
                 </h2>
                 <span className="text-sm font-medium text-primary-600">
-                  Step {currentStepIndex + 1} of {totalSteps}
+                  {t('game.step')} {currentStepIndex + 1} {t('game.of')} {totalSteps}
                 </span>
               </div>
               <div className="w-full bg-secondary-200 rounded-full h-2.5">
