@@ -24,24 +24,39 @@ const GamePreviewPage: React.FC = () => {
     const fetchGameData = async () => {
       if (!gameId) return;
       
+      console.log('🔍 DEBUG: GamePreviewPage - Starting to fetch data for gameId:', gameId);
       setLoading(true);
       try {
         // Fetch basic game info
+        console.log('🔍 DEBUG: Fetching basic game info...');
         const games = await getActiveGames();
+        console.log('🔍 DEBUG: Active games fetched:', games);
+        
         const gameData = games.find(g => g.game_id.toString() === gameId);
+        console.log('🔍 DEBUG: Found game data:', gameData);
+        
         if (!gameData) {
           throw new Error('Game not found');
         }
         setGame(gameData);
 
         // Fetch characters from the largest variation
+        console.log('🔍 DEBUG: Fetching characters from largest variation...');
         const largestVariation = await getLargestGameVariation(parseInt(gameId));
+        console.log('🔍 DEBUG: Largest variation result:', largestVariation);
+        
         if (largestVariation?.characters) {
+          console.log('🔍 DEBUG: Setting characters:', largestVariation.characters);
           setCharacters(largestVariation.characters);
+        } else {
+          console.log('❌ DEBUG: No characters found in largest variation');
         }
 
         // Fetch all images from the game's folder
+        console.log('🔍 DEBUG: Fetching game images...');
         const images = await getGameImages(parseInt(gameId));
+        console.log('🔍 DEBUG: Game images result:', images);
+        
         if (images.length > 0) {
           setGameImages(images);
         } else {
@@ -49,7 +64,7 @@ const GamePreviewPage: React.FC = () => {
           setGameImages([gameData.image].filter(Boolean));
         }
       } catch (error) {
-        console.error('Error fetching game preview data:', error);
+        console.error('❌ ERROR: Error fetching game preview data:', error);
         navigate('/shop');
       } finally {
         setLoading(false);
@@ -75,7 +90,7 @@ const GamePreviewPage: React.FC = () => {
     setCurrentImageIndex((prev) => (prev - 1 + gameImages.length) % gameImages.length);
   };
 
-  const isInCart = game ? items.some(item => item.gameId === game.id) : false;
+  const isInCart = game ? items.some(item => item.gameId === game.game_id.toString()) : false;
 
   if (loading) {
     return (

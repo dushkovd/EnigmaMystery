@@ -424,8 +424,11 @@ export const getGameVariation = async (variationId: number) => {
 
 // Get the largest variation (most players) for a game
 export const getLargestGameVariation = async (gameId: number) => {
+  console.log('🔍 DEBUG: getLargestGameVariation called with gameId:', gameId);
+  
   try {
     // Get all variations for this game, ordered by number of players descending
+    console.log('🔍 DEBUG: Fetching variations for gameId:', gameId);
     const { data: variations, error } = await supabase
       .from('Game_Variations')
       .select(`
@@ -439,23 +442,29 @@ export const getLargestGameVariation = async (gameId: number) => {
       .order('num_players', { ascending: false })
       .limit(1);
 
+    console.log('🔍 DEBUG: Variations query result:', { variations, error });
+
     if (error) {
-      console.error('Error fetching largest variation:', error);
+      console.error('❌ ERROR: Error fetching largest variation:', error);
       return null;
     }
 
     if (!variations || variations.length === 0) {
+      console.log('❌ DEBUG: No variations found for gameId:', gameId);
       return null;
     }
 
     const largestVariation = variations[0];
+    console.log('🔍 DEBUG: Largest variation found:', largestVariation);
 
-    // Get characters for this variation
-    const { data: characterVariations, error: characterError } = await supabase
+    // Get characters for this variation using explicit joins
+    console.log('🔍 DEBUG: Fetching characters for variationId:', largestVariation.variation_id);
+    const { data: characters, error: characterError } = await supabase
       .from('Character_Variations')
       .select(`
         character_id,
-        Characters (
+        variation_id,
+        Characters!inner (
           character_id,
           name,
           name_bg,
@@ -471,22 +480,27 @@ export const getLargestGameVariation = async (gameId: number) => {
       `)
       .eq('variation_id', largestVariation.variation_id);
 
+    console.log('🔍 DEBUG: Character variations query result:', { characters, characterError });
+
     if (characterError) {
-      console.error('Error fetching characters:', characterError);
+      console.error('❌ ERROR: Error fetching characters:', characterError);
       return null;
     }
 
-    const characters = characterVariations
+    const characterList = characters
       .map(cv => cv.Characters)
       .filter(Boolean)
       .flat() as Character[];
 
+    console.log('🔍 DEBUG: Processed characters:', characterList);
+    console.log('🔍 DEBUG: Character count:', characterList.length);
+
     return {
       ...largestVariation,
-      characters
+      characters: characterList
     };
   } catch (error) {
-    console.error('Error in getLargestGameVariation:', error);
+    console.error('❌ ERROR: Error in getLargestGameVariation:', error);
     return null;
   }
 };
