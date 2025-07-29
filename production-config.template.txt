@@ -1,0 +1,15 @@
+﻿# Production Deployment Configuration
+# Replace the placeholder values with your actual production credentials
+# These values will be used as GitHub Secrets
+
+# Supabase Configuration
+PROD_SUPABASE_URL=https://your-production-project.supabase.co
+PROD_SUPABASE_ANON_KEY=your-production-anon-key
+
+# Stripe Configuration
+PROD_STRIPE_PUBLIC_KEY=pk_live_your-production-stripe-key
+
+# FTP Configuration
+PROD_FTP_SERVER=your-ftp-server.com
+PROD_FTP_USERNAME=your-ftp-username
+PROD_FTP_PASSWORD=your-ftp-password
