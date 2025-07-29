@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('Attempting to create user record for:', data.user.id);
       try {
         const { data: rpcData, error: createError } = await supabase.rpc('create_user_record', {
-          user_id: data.user.id
+          input_user_id: data.user.id
         });
         if (createError) {
           console.error('Error creating user record:', createError);
