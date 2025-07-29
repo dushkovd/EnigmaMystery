@@ -75,7 +75,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       if (!data.user) throw new Error('No user returned');
 
-      // Wait for the user row to appear in Users table
+      // Create user record in Users table
+      console.log('Attempting to create user record for:', data.user.id);
+      const { data: rpcData, error: createError } = await supabase.rpc('create_user_record');
+      if (createError) {
+        console.error('Error creating user record:', createError);
+        console.error('Error details:', createError.message, createError.details, createError.hint);
+        // Continue anyway - the user is still created in auth.users
+      } else {
+        console.log('User record created successfully:', rpcData);
+      }
+
+      // Wait for the user row to appear in Users table (fallback)
       await waitForUserRow(data.user.id);
 
       setUser({
