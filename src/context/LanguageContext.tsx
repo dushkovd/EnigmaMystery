@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'bg';
 
@@ -73,6 +73,7 @@ const translations: Record<string, Record<string, string>> = {
     'auth.signInHere': 'Sign in here.',
     'auth.dontHaveAccount': 'Don\'t have an account?',
     'auth.registerHere': 'Register here.',
+    'auth.signingUp': 'Signing Up...',
     
     // Cart
     'cart.title': 'Shopping Cart',
@@ -350,6 +351,7 @@ const translations: Record<string, Record<string, string>> = {
     'auth.signInHere': 'Влезте тук.',
     'auth.dontHaveAccount': 'Нямате акаунт?',
     'auth.registerHere': 'Регистрирайте се тук.',
+    'auth.signingUp': 'Регистриране...',
     
     // Cart
     'cart.title': 'Количка за Пазаруване',
