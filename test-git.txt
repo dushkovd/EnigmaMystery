@@ -1,0 +1,2 @@
+This is a test file to check if git is working.
+Current time: 2025-07-30 

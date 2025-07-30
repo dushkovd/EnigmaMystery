@@ -5,7 +5,7 @@ import { ShoppingCart, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { formatDuration } from '../utils/durationFormatter';
-import { formatPrice } from '../utils/currencyFormatter';
+import { formatPrice, getEffectivePrice, hasDiscount, getDiscountPercentage } from '../utils/currencyFormatter';
 
 const CartPage: React.FC = () => {
   const { cartGames, items, addToCart, removeFromCart, clearCart, totalPrice, totalItems } = useCart();
@@ -165,7 +165,19 @@ const CartPage: React.FC = () => {
                                       <Trash2 className="w-5 h-5" />
                                     </button>
                                     <div className="text-xl font-bold text-secondary-800 text-right">
-                                      {formatPrice(game.price, language)}
+                                      {hasDiscount(game) ? (
+                                        <div className="flex flex-col items-end">
+                                          <span>{formatPrice(getEffectivePrice(game), language)}</span>
+                                          <span className="text-sm text-gray-500 line-through">
+                                            {formatPrice(game.price, language)}
+                                          </span>
+                                          <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                                            -{getDiscountPercentage(game)}%
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        formatPrice(game.price, language)
+                                      )}
                                     </div>
                                   </div>
                                 </div>

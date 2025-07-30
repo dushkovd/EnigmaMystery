@@ -9,6 +9,7 @@ export interface Game {
   description: string;
   setting: string;
   price: number;
+  price_with_discount?: number;  // Discounted price when on sale
   is_active: boolean;
   image: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
@@ -117,6 +118,7 @@ const transformGameData = (game: any): Game => {
     description: game.description || '',
     setting: game.setting || '',
     price: game.price,
+    price_with_discount: game.price_with_discount,
     is_active: game.is_active ?? true,
     image: imageUrl,
     difficulty: game.difficulty || 'Medium',

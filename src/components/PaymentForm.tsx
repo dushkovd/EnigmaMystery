@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   CardNumberElement,
@@ -14,8 +14,7 @@ import { supabase } from '../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useCurrency } from '../context/CurrencyContext';
-import { formatPrice, getStripeCurrencyCode } from '../utils/currencyFormatter';
+import { formatPrice, getStripeCurrencyCode, CURRENCY_CONFIG, getEffectivePrice } from '../utils/currencyFormatter';
 
 // Initialize Stripe with your publishable key - moved outside component to prevent re-initialization
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -23,11 +22,11 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 interface PaymentFormProps {
   gameId: string;
   gameTitle: string;
-  price: number;
+  game: { price: number; price_with_discount?: number };
   onProcessingChange?: (isProcessing: boolean) => void;
 }
 
-const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, price, onProcessingChange }) => {
+const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, game, onProcessingChange }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +36,6 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
   const { clearCart } = useCart();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const { currency } = useCurrency();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -61,7 +59,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
             'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
-            amount: Math.round(price * 100), // Convert to cents
+            amount: Math.round(getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate * 100), // Convert to cents in the correct currency
             currency: getStripeCurrencyCode(language),
             userId: user?.id,
           }),
@@ -103,7 +101,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
           .insert([
             {
               user_id: user?.id,
-              total_amount: price,
+              total_amount: getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate, // Store the converted amount
               status: 'completed',
               payment_intent_id: paymentIntent.id
             }
@@ -123,7 +121,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
               order_id: orderData.order_id,
               game_id: gameId,
               quantity: 1,
-              price: price
+              price: getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate // Store the converted amount
             }
           ]);
 
@@ -166,7 +164,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6">{t('checkout.paymentDetails')}</h2>
       <p className="mb-4 text-gray-600">{t('checkout.purchasing')}: {gameTitle}</p>
-      <p className="mb-6 text-gray-600">{t('checkout.amount')}: {formatPrice(price, language)}</p>
+      <p className="mb-6 text-gray-600">{t('checkout.amount')}: {formatPrice(getEffectivePrice(game), language)}</p>
       
       <div className="space-y-4">
         <div>
@@ -242,7 +240,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, pri
           processing ? 'bg-primary-400' : 'bg-primary-600 hover:bg-primary-700'
         }`}
       >
-        {processing ? t('checkout.processingPayment') : `${t('checkout.pay')} ${formatPrice(price, language)}`}
+        {processing ? t('checkout.processingPayment') : `${t('checkout.pay')} ${formatPrice(getEffectivePrice(game), language)}`}
       </button>
     </form>
   );

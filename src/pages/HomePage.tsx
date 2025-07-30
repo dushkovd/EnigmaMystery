@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Layers, Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
-import { getActiveGames, Game } from '../api/games';
+import { Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
+import { Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useGames } from '../context/GameContext';
 import { formatDuration } from '../utils/durationFormatter';
-import { formatPrice } from '../utils/currencyFormatter';
+import { formatPrice, getEffectivePrice, hasDiscount, getDiscountPercentage } from '../utils/currencyFormatter';
 
 const HomePage: React.FC = () => {
   const { t, language } = useLanguage();
@@ -38,7 +38,21 @@ const HomePage: React.FC = () => {
     return (
       <div className="flex items-center justify-between pt-4">
         <span className="text-2xl font-bold">
-          {formatPrice(featuredGame.price, language)}
+          {hasDiscount(featuredGame) ? (
+            <div className="flex flex-col">
+              <span>{formatPrice(getEffectivePrice(featuredGame), language)}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500 line-through">
+                  {formatPrice(featuredGame.price, language)}
+                </span>
+                <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                  -{getDiscountPercentage(featuredGame)}%
+                </span>
+              </div>
+            </div>
+          ) : (
+            formatPrice(featuredGame.price, language)
+          )}
         </span>
         {isInCart ? (
           <button
