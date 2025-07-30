@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Game } from '../api/games';
 import { useGames } from './GameContext';
+import { getEffectivePrice } from '../utils/currencyFormatter';
 
 interface CartItem {
   gameId: string;
@@ -67,7 +68,7 @@ export function CartProvider({ children }: CartProviderProps) {
       setCartGames(gamesInCart);
       setTotalItems(items.reduce((total, item) => total + item.quantity, 0));
       setTotalPrice(
-        gamesInCart.reduce((total, game) => total + (game.price * game.quantity), 0)
+        gamesInCart.reduce((total, game) => total + (getEffectivePrice(game) * game.quantity), 0)
       );
     }
   }, [items, games, gamesLoading]);

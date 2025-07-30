@@ -156,6 +156,8 @@ const translations: Record<string, Record<string, string>> = {
     'shop.addToCart': 'Add to Cart',
     'shop.inCart': 'In Cart',
     'shop.preview': 'Preview',
+    'shop.discount': 'Discount',
+    'shop.onSale': 'On Sale',
     
     // Checkout Page
     'checkout.title': 'Checkout',
@@ -434,6 +436,8 @@ const translations: Record<string, Record<string, string>> = {
     'shop.addToCart': 'Добави в количката',
     'shop.inCart': 'В количката',
     'shop.preview': 'Преглед',
+    'shop.discount': 'Отстъпка',
+    'shop.onSale': 'На промоция',
     
     // Checkout Page
     'checkout.title': 'Поръчка',

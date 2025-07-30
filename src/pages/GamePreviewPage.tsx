@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+
 import { Users, Clock, Award, ShoppingCart, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Game, Character as GameCharacter, getLargestGameVariation, getActiveGames } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
-import { formatPrice } from '../utils/currencyFormatter';
+import { formatPrice, getEffectivePrice, hasDiscount, getDiscountPercentage } from '../utils/currencyFormatter';
 import { formatDuration } from '../utils/durationFormatter';
 import { getGameImages } from '../utils/imageStorage';
 
@@ -245,7 +245,21 @@ const GamePreviewPage: React.FC = () => {
               <div className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="text-3xl font-bold text-secondary-800">
-                    {formatPrice(game.price, language)}
+                    {hasDiscount(game) ? (
+                      <div className="flex flex-col">
+                        <span>{formatPrice(getEffectivePrice(game), language)}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg text-gray-500 line-through">
+                            {formatPrice(game.price, language)}
+                          </span>
+                          <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                            -{getDiscountPercentage(game)}%
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      formatPrice(game.price, language)
+                    )}
                   </div>
                   <div className="flex items-center space-x-3 flex-shrink-0">
                     {isInCart ? (

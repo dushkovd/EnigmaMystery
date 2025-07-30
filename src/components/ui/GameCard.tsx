@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Eye, Plus, Minus } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { Game } from '../../api/games';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { formatPrice } from '../../utils/currencyFormatter';
+import { formatPrice, getEffectivePrice, hasDiscount, getDiscountPercentage } from '../../utils/currencyFormatter';
 
 interface GameCardProps {
   game: Game;
@@ -15,7 +15,6 @@ interface GameCardProps {
 
 const GameCard: React.FC<GameCardProps> = ({ game, purchased = false }) => {
   const { addToCart, removeFromCart, items } = useCart();
-  const { isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
@@ -84,9 +83,27 @@ const GameCard: React.FC<GameCardProps> = ({ game, purchased = false }) => {
           <p className="text-secondary-600 text-sm mb-4 flex-grow">{description}</p>
           
           <div className="mt-auto flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
-            <span className="text-lg font-bold text-secondary-800">
-              {formatPrice(game.price, language)}
-            </span>
+            <div className="flex flex-col">
+              {hasDiscount(game) ? (
+                <>
+                  <span className="text-lg font-bold text-secondary-800">
+                    {formatPrice(getEffectivePrice(game), language)}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500 line-through">
+                      {formatPrice(game.price, language)}
+                    </span>
+                    <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                      -{getDiscountPercentage(game)}%
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <span className="text-lg font-bold text-secondary-800">
+                  {formatPrice(game.price, language)}
+                </span>
+              )}
+            </div>
             
             {purchased ? (
               <Link to={`/game/${game.id}`} className="btn-primary py-2 px-4 text-sm">

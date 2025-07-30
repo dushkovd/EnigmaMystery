@@ -9,7 +9,7 @@ interface CurrencyConfig {
   rate: number; // Rate relative to EUR (base currency)
 }
 
-const CURRENCY_CONFIG: Record<SupportedCurrency, CurrencyConfig> = {
+export const CURRENCY_CONFIG: Record<SupportedCurrency, CurrencyConfig> = {
   EUR: {
     symbol: '€',
     code: 'eur',
@@ -47,4 +47,20 @@ export const getStripeCurrencyCode = (language: 'en' | 'bg'): string => {
 // Function to determine currency based on country code
 export const getCurrencyForCountry = (countryCode: string): SupportedCurrency => {
   return countryCode === 'BG' ? 'BGN' : 'EUR';
+};
+
+// Function to get the effective price (discount price if available, otherwise regular price)
+export const getEffectivePrice = (game: { price: number; price_with_discount?: number }): number => {
+  return game.price_with_discount || game.price;
+};
+
+// Function to check if a game has a discount
+export const hasDiscount = (game: { price: number; price_with_discount?: number }): boolean => {
+  return game.price_with_discount !== undefined && game.price_with_discount !== null;
+};
+
+// Function to calculate discount percentage
+export const getDiscountPercentage = (game: { price: number; price_with_discount?: number }): number => {
+  if (!hasDiscount(game)) return 0;
+  return Math.round(((game.price - game.price_with_discount!) / game.price) * 100);
 }; 

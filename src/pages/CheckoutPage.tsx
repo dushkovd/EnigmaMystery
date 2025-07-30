@@ -9,7 +9,7 @@ import AuthForm from '../components/AuthForm';
 const PaymentForm = React.lazy(() => import('../components/PaymentForm'));
 
 const CheckoutPage: React.FC = () => {
-  const { cartGames, totalPrice } = useCart();
+  const { cartGames } = useCart();
   const { isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const CheckoutPage: React.FC = () => {
                 <PaymentForm 
                   gameId={selectedGame.id}
                   gameTitle={selectedGame.title}
-                  price={selectedGame.price}
+                  game={selectedGame}
                   onProcessingChange={setIsProcessingPayment}
                 />
               </Suspense>
