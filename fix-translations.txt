@@ -1,0 +1,24 @@
+FIX FOR HARDCODED TRANSLATIONS IN AuthForm.tsx
+
+The following lines need to be changed in src/components/AuthForm.tsx:
+
+LINE 455 (around line 455):
+CHANGE FROM:
+        By signing up I accept the <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">terms and conditions</a> of this page.
+
+CHANGE TO:
+        {t('auth.termsAccept')} <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">{t('auth.termsAndConditions')}</a> {t('auth.termsOfThisPage')}
+
+LINE 477 (around line 477):
+CHANGE FROM:
+          Already have an account? Sign in here.
+
+CHANGE TO:
+          {t('auth.alreadyHaveAccount')} {t('auth.signInHere')}
+
+After making these changes:
+1. Save the file
+2. Commit: git add src/components/AuthForm.tsx && git commit -m "Fix hardcoded translations"
+3. Push: git push origin develop
+4. Wait for GitHub Actions deployment to complete
+5. Test on staging environment 

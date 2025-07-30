@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'bg';
 
@@ -66,6 +66,14 @@ const translations: Record<string, Record<string, string>> = {
     'auth.or': 'or',
     'auth.switchToRegister': 'Create an account',
     'auth.switchToLogin': 'Sign in to your account',
+    'auth.termsAccept': 'By signing up I accept the',
+    'auth.termsAndConditions': 'terms and conditions',
+    'auth.termsOfThisPage': 'of this page.',
+    'auth.alreadyHaveAccount': 'Already have an account?',
+    'auth.signInHere': 'Sign in here.',
+    'auth.dontHaveAccount': 'Don\'t have an account?',
+    'auth.registerHere': 'Register here.',
+    'auth.signingUp': 'Signing Up...',
     
     // Cart
     'cart.title': 'Shopping Cart',
@@ -336,6 +344,14 @@ const translations: Record<string, Record<string, string>> = {
     'auth.or': 'или',
     'auth.switchToRegister': 'Създайте акаунт',
     'auth.switchToLogin': 'Влезте в акаунта си',
+    'auth.termsAccept': 'С регистрацията си приемам',
+    'auth.termsAndConditions': 'общите условия',
+    'auth.termsOfThisPage': 'на тази страница.',
+    'auth.alreadyHaveAccount': 'Вече имате акаунт?',
+    'auth.signInHere': 'Влезте тук.',
+    'auth.dontHaveAccount': 'Нямате акаунт?',
+    'auth.registerHere': 'Регистрирайте се тук.',
+    'auth.signingUp': 'Регистриране...',
     
     // Cart
     'cart.title': 'Количка за Пазаруване',

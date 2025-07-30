@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { supabase } from '../supabaseClient.js';
 import { useEffect } from 'react';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
@@ -70,19 +70,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (email: string, password: string) => {
     setLoading(true);
     try {
+      console.log('Starting registration for:', email);
       const { data, error } = await supabase.auth.signUp({ email, password });
 
-      if (error) throw error;
-      if (!data.user) throw new Error('No user returned');
+      if (error) {
+        console.error('Signup error:', error);
+        throw error;
+      }
+      if (!data.user) {
+        console.error('No user returned from signup');
+        throw new Error('No user returned');
+      }
+
+      console.log('User created in auth.users:', data.user.id);
 
       // Create user record in Users table
-      const { error: createError } = await supabase.rpc('create_user_record');
-      if (createError) {
-        console.error('Error creating user record:', createError);
-        // Continue anyway - the user is still created in auth.users
+      console.log('Attempting to create user record for:', data.user.id);
+      try {
+        const { data: rpcData, error: createError } = await supabase.rpc('create_user_record', {
+          input_user_id: data.user.id
+        });
+        if (createError) {
+          console.error('Error creating user record:', createError);
+          console.error('Error details:', createError.message, createError.details, createError.hint);
+          // Continue anyway - the user is still created in auth.users
+        } else {
+          console.log('User record created successfully:', rpcData);
+        }
+      } catch (rpcError) {
+        console.error('RPC call failed:', rpcError);
       }
 
       // Wait for the user row to appear in Users table (fallback)
+      console.log('Starting to wait for user row...');
       await waitForUserRow(data.user.id);
 
       setUser({

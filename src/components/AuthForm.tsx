@@ -33,7 +33,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [resetToken, setResetToken] = useState('');
+  // const [resetToken, setResetToken] = useState('');
   const [showRegisterState, setShowRegisterState] = useState(!!showRegisterProp);
   const showRegister = showRegisterProp !== undefined ? showRegisterProp : showRegisterState;
   const setShowRegister = setShowRegisterProp || setShowRegisterState;
@@ -453,7 +453,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
         </div>
       )}
       <div className="mb-4 text-xs text-secondary-500 text-center">
-        By signing up I accept the <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">terms and conditions</a> of this page.
+        {t('auth.termsAccept')} <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">{t('auth.termsAndConditions')}</a> {t('auth.termsOfThisPage')} // TODO: Fix translations
       </div>
       <div className="flex gap-3">
         {showCancelButton && (
@@ -475,7 +475,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
       </div>
       <div className="mt-4 text-center">
         <button type="button" className="text-primary-600 hover:underline" onClick={() => setShowRegister(false)}>
-          Already have an account? Sign in here.
+          {t('auth.alreadyHaveAccount')} {t('auth.signInHere')}
         </button>
       </div>
     </motion.form>
@@ -498,7 +498,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           {step === 'resetPassword' && renderResetPasswordForm()}
               <div className="mt-4 text-center">
                 <button type="button" className="text-primary-600 hover:underline" onClick={() => setShowRegister(true)}>
-                  Don't have an account? Register here.
+                  {t('auth.dontHaveAccount')} {t('auth.registerHere')}
                 </button>
               </div>
             </>
