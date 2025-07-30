@@ -50,6 +50,14 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, gam
 
     try {
       // Create payment intent with the selected currency
+      const requestBody = {
+        amount: Math.round(getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate * 100), // Convert to cents in the correct currency
+        currency: getStripeCurrencyCode(language),
+        userId: user?.id,
+      };
+      
+      console.log('Payment intent request:', requestBody); // Debug log
+      
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`,
         {
@@ -58,11 +66,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, gam
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
-          body: JSON.stringify({
-            amount: Math.round(getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate * 100), // Convert to cents in the correct currency
-            currency: getStripeCurrencyCode(language),
-            userId: user?.id,
-          }),
+          body: JSON.stringify(requestBody),
         }
       );
 

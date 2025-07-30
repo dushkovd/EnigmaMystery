@@ -25,6 +25,8 @@ serve(async (req) => {
   try {
     const { amount, currency = 'eur', userId } = await req.json() as RequestBody;
 
+    console.log('Received payment intent request:', { amount, currency, userId }); // Debug log
+
     if (!amount || amount <= 0) {
       throw new Error('Invalid amount');
     }
@@ -40,6 +42,12 @@ serve(async (req) => {
         userId,
       },
     });
+
+    console.log('Created payment intent:', { 
+      id: paymentIntent.id, 
+      amount: paymentIntent.amount, 
+      currency: paymentIntent.currency 
+    }); // Debug log
 
     return new Response(
       JSON.stringify({
