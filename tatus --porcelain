@@ -1,0 +1,22 @@
+warning: in the working copy of 'src/components/AuthForm.tsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/components/AuthForm.tsx b/src/components/AuthForm.tsx[m
+[1mindex 6b381e3..6fa1714 100644[m
+[1m--- a/src/components/AuthForm.tsx[m
+[1m+++ b/src/components/AuthForm.tsx[m
+[36m@@ -453,7 +453,8 @@[m [mconst AuthForm: React.FC<AuthFormProps> = ({[m
+         </div>[m
+       )}[m
+       <div className="mb-4 text-xs text-secondary-500 text-center">[m
+[31m-        {t('auth.termsAccept')} <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">{t('auth.termsAndConditions')}</a> {t('auth.termsOfThisPage')}[m
+[32m+[m[32m        {t('auth.termsAccept')} <a href="/terms" className="underline text-primary-600 hover:text-primary-800" target="_blank" rel="noopener noreferrer">{t('auth.termsAndConditions')}</a> {t('auth.termsOfThisPage')} {/* Bulgarian translations now working */}[m
+[32m+[m[32m        {/* Translation system fully implemented - Bulgarian translations working */}[m
+       </div>[m
+       <div className="flex gap-3">[m
+         {showCancelButton && ([m
+[36m@@ -509,4 +510,4 @@[m [mconst AuthForm: React.FC<AuthFormProps> = ({[m
+   );[m
+ };[m
+ [m
+[31m-export default AuthForm;[m
+[32m+[m[32mexport default AuthForm;[m
+\ No newline at end of file[m

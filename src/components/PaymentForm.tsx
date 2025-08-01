@@ -16,6 +16,18 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { formatPrice, getStripeCurrencyCode, CURRENCY_CONFIG, getEffectivePrice } from '../utils/currencyFormatter';
 
+// Track purchase event with Meta Pixel
+const trackPurchase = (value: number, currency: string, contentIds: string[]) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', 'Purchase', {
+      value: value,
+      currency: currency,
+      content_ids: contentIds,
+      content_type: 'product'
+    });
+  }
+};
+
 // Initialize Stripe with your publishable key - moved outside component to prevent re-initialization
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -129,6 +141,10 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, gam
           throw new Error(t('checkout.orderItemError'));
         }
 
+        // Track purchase event with Meta Pixel
+        const purchaseAmount = getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate;
+        trackPurchase(purchaseAmount, getStripeCurrencyCode(language), [gameId]);
+        
         // Show success message and redirect immediately
         setSuccess(true);
         clearCart();
