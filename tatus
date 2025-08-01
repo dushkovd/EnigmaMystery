@@ -1,0 +1,10 @@
+[33m100cc0e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdevelop[m[33m)[m Fix Meta Pixel HTML structure - move noscript to body
+[33mc276238[m Complete Meta Pixel implementation with all standard events
+[33mb20d4a2[m Fix Meta Pixel implementation - add proper tracking to checkout page
+[33m8f5766c[m Add Meta Pixel tracking to checkout page
+[33mcedfd3d[m    Merge branch 'develop'
+[33maaf35cb[m Remove debug logs and prepare for production deployment
+[33mea50e8d[m Add debugging logs for currency issue
+[33m278a421[m Merge branch 'develop' of https://github.com/dushkovd/EnigmaMystery into develop fix payments
+[33m011a271[m Fix payment currency conversion and implement discount pricing
+[33m6161ab0[m Update AuthForm.tsx
