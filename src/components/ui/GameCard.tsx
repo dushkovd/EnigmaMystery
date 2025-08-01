@@ -8,6 +8,16 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { formatPrice, getEffectivePrice, hasDiscount, getDiscountPercentage } from '../../utils/currencyFormatter';
 
+// Track ViewContent event with Meta Pixel
+const trackViewContent = (contentIds: string[]) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', 'ViewContent', {
+      content_ids: contentIds,
+      content_type: 'product'
+    });
+  }
+};
+
 interface GameCardProps {
   game: Game;
   purchased?: boolean;
@@ -41,6 +51,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, purchased = false }) => {
   const handlePreview = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    trackViewContent([game.id.toString()]);
     navigate(`/preview/${game.game_id}`);
   };
 

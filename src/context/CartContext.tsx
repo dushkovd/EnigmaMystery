@@ -3,6 +3,18 @@ import { Game } from '../api/games';
 import { useGames } from './GameContext';
 import { getEffectivePrice } from '../utils/currencyFormatter';
 
+// Track AddToCart event with Meta Pixel
+const trackAddToCart = (value: number, currency: string, contentIds: string[]) => {
+  if (typeof window !== 'undefined' && (window as any).fbq) {
+    (window as any).fbq('track', 'AddToCart', {
+      value: value,
+      currency: currency,
+      content_ids: contentIds,
+      content_type: 'product'
+    });
+  }
+};
+
 interface CartItem {
   gameId: string;
   quantity: number;
@@ -86,6 +98,13 @@ export function CartProvider({ children }: CartProviderProps) {
         return [...prevItems, { gameId, quantity: 1 }];
       }
     });
+    
+    // Track AddToCart event with Meta Pixel
+    const game = games.find(g => g.id === gameId);
+    if (game) {
+      const price = getEffectivePrice(game);
+      trackAddToCart(price, 'USD', [gameId]);
+    }
   };
 
   const removeFromCart = (gameId: string) => {

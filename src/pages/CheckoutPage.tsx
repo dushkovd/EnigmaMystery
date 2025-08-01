@@ -14,36 +14,6 @@ declare global {
   }
 }
 
-// Meta Pixel initialization
-const initMetaPixel = () => {
-  if (typeof window === 'undefined') return;
-  
-  // Check if Meta Pixel is already initialized
-  if ((window as any).fbq) return;
-  
-  // Initialize Meta Pixel
-  (function(f: any, b: any, e: any, v: any, n: any, t: any, s: any) {
-    if (f.fbq) return;
-    n = f.fbq = function() {
-      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-    };
-    if (!f._fbq) f._fbq = n;
-    n.push = n;
-    n.loaded = !0;
-    n.version = '2.0';
-    n.queue = [];
-    t = b.createElement(e);
-    t.async = !0;
-    t.src = v;
-    s = b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t, s);
-  })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js', undefined, undefined, undefined);
-  
-  // Initialize with your pixel ID
-  (window as any).fbq('init', '1287939146186577');
-  (window as any).fbq('track', 'PageView');
-};
-
 // Track initiate checkout event
 const trackInitiateCheckout = (value?: number, currency: string = 'USD', contentIds?: string[]) => {
   if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -85,12 +55,8 @@ const CheckoutPage: React.FC = () => {
     }
   }, [cartGames.length, navigate, t, isAuthenticated]);
 
-  // Initialize Meta Pixel and track checkout event
+  // Track initiate checkout event when user reaches checkout page
   useEffect(() => {
-    // Initialize Meta Pixel
-    initMetaPixel();
-    
-    // Track initiate checkout event when user reaches checkout page
     if (cartGames.length > 0) {
       const contentIds = cartGames.map(game => game.id.toString());
       trackInitiateCheckout(totalPrice, 'USD', contentIds);
@@ -101,19 +67,7 @@ const CheckoutPage: React.FC = () => {
   const selectedGame = cartGames[0];
 
   return (
-    <>
-      {/* Meta Pixel noscript fallback */}
-      <noscript>
-        <img 
-          height="1" 
-          width="1" 
-          style={{ display: 'none' }}
-          src="https://www.facebook.com/tr?id=1287939146186577&ev=PageView&noscript=1"
-          alt=""
-        />
-      </noscript>
-      
-      <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
+    <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -138,7 +92,6 @@ const CheckoutPage: React.FC = () => {
         </motion.div>
       </div>
     </div>
-    </>
   );
 };
 
