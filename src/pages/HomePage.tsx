@@ -93,14 +93,14 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ 
-              backgroundImage: "url('https://images.pexels.com/photos/4153146/pexels-photo-4153146.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
-              filter: 'brightness(0.4)'
-            }}
-          ></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/70 to-secondary-800/90 mix-blend-multiply"></div>
+          {/* Try both approaches: img tag and CSS background */}
+          <img 
+            src="/hero-background.png"
+            alt="Hero background"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(1.5)' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/40 to-secondary-800/60 mix-blend-multiply"></div>
         </div>
         
         <div className="container-custom relative z-10 mt-20 md:mt-0">
@@ -110,12 +110,12 @@ const HomePage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-              {t('home.hero.title')} <span className="text-accent-400">{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
-            </h1>
-            <p className="text-lg md:text-xl text-secondary-200 mb-8 leading-relaxed">
-              {t('home.hero.subtitle')}
-            </p>
+                                      <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
+               {t('home.hero.title')} <span className="text-accent-400" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
+              </h1>
+                                      <p className="text-lg md:text-xl text-secondary-200 mb-8 leading-relaxed" style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
+               {t('home.hero.subtitle')}
+              </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/shop" className="btn-accent text-lg" state={{ preventScroll: true }}>
                 {t('home.hero.exploreGames')}
@@ -143,6 +143,125 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Key Features Section */}
+      <section className="py-16 bg-secondary-50">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-primary-800">
+              {language === 'bg' ? 'Какво Представлява?' : 'What It\'s All About?'}
+            </h2>
+            <div className="w-24 h-1 bg-accent-500 mx-auto mb-6"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                         {/* Feature 1: One Device Controls Everything */}
+             <motion.div 
+               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.5, delay: 0.1 }}
+             >
+               {/* Background Image */}
+               <div className="absolute inset-0 z-0">
+                 <img 
+                   src="/one_phone.png"
+                   alt="Feature background"
+                   className="w-full h-full object-cover"
+                   style={{ filter: 'brightness(0.3)' }}
+                 />
+                 <div className="absolute inset-0 bg-white/20"></div>
+               </div>
+               
+               {/* Content */}
+               <div className="relative z-10">
+                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                     {language === 'bg' ? 'Едно устройство' : 'One Device'}
+                   </h3>
+                  <p className="text-white leading-relaxed">
+                    {language === 'bg' ? 'Използвайте един телефон, таблет или компютър, който да ви навигира през цялата игра.' : 'Use any phone, tablet, or computer to guide the entire game. No printing, no setup hassle - just start and play.'}
+                  </p>
+               </div>
+             </motion.div>
+
+                         {/* Feature 2: Perfect for Groups */}
+             <motion.div 
+               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.5, delay: 0.2 }}
+             >
+               {/* Background Image */}
+               <div className="absolute inset-0 z-0">
+                 <img 
+                   src="/groups.png"
+                   alt="Feature background"
+                   className="w-full h-full object-cover"
+                   style={{ filter: 'brightness(0.3)' }}
+                 />
+                 <div className="absolute inset-0 bg-white/20"></div>
+               </div>
+               
+               {/* Content */}
+               <div className="relative z-10">
+                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                     {language === 'bg' ? '4 - 10 играчи' : '4 to 10 people'}
+                   </h3>
+                  <p className="text-white leading-relaxed">
+                    {language === 'bg' ? 'Различни вариации на игрите за компании от 4 до 10 души, събрани на живо.' : 'Designed for 4-10 players gathering in person. Each player gets a unique character with secrets and motives.'}
+                  </p>
+               </div>
+             </motion.div>
+
+                         {/* Feature 3: 2 Hours of Entertainment */}
+             <motion.div 
+               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.5, delay: 0.3 }}
+             >
+               {/* Background Image */}
+               <div className="absolute inset-0 z-0">
+                 <img 
+                   src="/fun.png"
+                   alt="Feature background"
+                   className="w-full h-full object-cover"
+                   style={{ filter: 'brightness(0.3)' }}
+                 />
+                 <div className="absolute inset-0 bg-white/20"></div>
+               </div>
+               
+               {/* Content */}
+               <div className="relative z-10">
+                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                     {language === 'bg' ? 'Два часа забавление' : '2 Hours of Entertainment'}
+                   </h3>
+                  <p className="text-white leading-relaxed">
+                    {language === 'bg' ? 'Всяка игра осигурява между 1 и 3 часа забавление в решаване на мистерии.' : 'Each game provides between 1 to 3 hours of immersive mystery-solving fun, perfect for dinner parties or game nights.'}
+                  </p>
+               </div>
+             </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Game */}
       {featuredGame && (
       <section id="featured" className="section bg-secondary-50">
@@ -150,9 +269,6 @@ const HomePage: React.FC = () => {
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('home.featured.title')}</h2>
             <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
-            <p className="text-secondary-600 max-w-2xl mx-auto">
-                {t('home.featured.desc')}
-            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
@@ -324,7 +440,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
               <div className="text-center lg:text-left">
-                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.noPassive.title')}</h3>
+                <h3 className="text-2xl font-display font-bold mb-3 text-black">{t('home.advantages.noPassive.title')}</h3>
                 <p className="text-secondary-700 text-lg leading-relaxed">
                   {t('home.advantages.noPassive.desc')}
                 </p>
@@ -347,7 +463,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
               <div className="text-center lg:text-left">
-                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.amnesia.title')}</h3>
+                <h3 className="text-2xl font-display font-bold mb-3 text-black">{t('home.advantages.amnesia.title')}</h3>
                 <p className="text-secondary-700 text-lg leading-relaxed">
                   {t('home.advantages.amnesia.desc')}
                 </p>
@@ -370,7 +486,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
               <div className="text-center lg:text-left">
-                <h3 className="text-2xl font-display font-bold mb-3 text-primary-800">{t('home.advantages.digital.title')}</h3>
+                <h3 className="text-2xl font-display font-bold mb-3 text-black">{t('home.advantages.digital.title')}</h3>
                 <p className="text-secondary-700 text-lg leading-relaxed">
                   {t('home.advantages.digital.desc')}
                 </p>

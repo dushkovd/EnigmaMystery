@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             <p className="max-w-md">
               {t('footer.companyInfo')}
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 hidden">
               <a href="#" className="text-secondary-300 hover:text-white"><Facebook /></a>
               <a href="#" className="text-secondary-300 hover:text-white"><Twitter /></a>
               <a href="#" className="text-secondary-300 hover:text-white"><Instagram /></a>
