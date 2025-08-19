@@ -120,7 +120,7 @@ const HomePage: React.FC = () => {
               <Link to="/shop" className="btn-accent text-lg" state={{ preventScroll: true }}>
                 {t('home.hero.exploreGames')}
               </Link>
-              <a href="#how-it-works" className="btn-outline border-white text-white hover:bg-white/10 text-lg">
+              <a href="#all-about" className="btn-outline border-white text-white hover:bg-white/10 text-lg">
                 {t('home.hero.howItWorks')}
               </a>
             </div>
@@ -144,10 +144,10 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Key Features Section */}
-      <section className="py-16 bg-secondary-50">
+      <section id="all-about" className="py-16 bg-secondary-50">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-primary-800">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-black">
               {language === 'bg' ? 'Какво Представлява?' : 'What It\'s All About?'}
             </h2>
             <div className="w-24 h-1 bg-accent-500 mx-auto mb-6"></div>
@@ -339,6 +339,30 @@ const HomePage: React.FC = () => {
         </div>
       </section>
       )}
+
+      {/* Alternate CTA after Featured Game */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ 
+              backgroundImage: "url('https://images.pexels.com/photos/301614/pexels-photo-301614.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+              filter: 'brightness(0.3)'
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-secondary-800/90 to-secondary-900/70"></div>
+        </div>
+        <div className="container-custom relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
+              {t('home.altCta.title')}
+            </h2>
+            <Link to="/shop" className="btn-accent text-lg">
+              {t('home.altCta.button')}
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* How It Works */}
       <section id="how-it-works" className="section bg-white">

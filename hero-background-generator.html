@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Background Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .hero-preview {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .hero-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(0,0,0,0.3)"/></radialGradient></defs><rect width="800" height="400" fill="url(%23a)"/><circle cx="200" cy="200" r="80" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="150" r="60" fill="rgba(255,255,255,0.1)"/><circle cx="400" cy="300" r="40" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.6;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hero Background Image Generator</h1>
+        
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <p>Based on your description, you need a hero background image featuring:</p>
+            <ul>
+                <li>Four young adults (3 women, 1 man) gathered closely</li>
+                <li>Dimly lit room with smartphone screen illumination</li>
+                <li>Dark, intimate atmosphere</li>
+                <li>Man on left holding smartphone, looking down with smile</li>
+                <li>Two women leaning in, also looking at phone</li>
+                <li>Fourth woman partially visible behind others</li>
+                <li>Dark background with cozy indoor setting</li>
+            </ul>
+        </div>
+
+        <div class="hero-preview">
+            <div class="hero-content">
+                <h2>Hero Section Preview</h2>
+                <p>This shows how your image will look as a background</p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> This is a placeholder. You'll need to:
+            <ol>
+                <li>Take or find a photo matching your description</li>
+                <li>Save it as "hero-background.jpg" in your project's "public" folder</li>
+                <li>The image should be high resolution (at least 1920x1080)</li>
+                <li>Ensure the image has good contrast for text readability</li>
+            </ol>
+        </div>
+
+        <h3>Alternative Options:</h3>
+        <button class="download-btn" onclick="generatePlaceholder()">Generate Placeholder</button>
+        <button class="download-btn" onclick="downloadCanvas()">Download Canvas</button>
+        
+        <canvas id="heroCanvas" width="1920" height="1080" style="display: none;"></canvas>
+    </div>
+
+    <script>
+        function generatePlaceholder() {
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Create a dark, moody background
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+            
+            // Add some abstract shapes to represent people
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            
+            // Person 1 (left)
+            ctx.beginPath();
+            ctx.arc(400, 400, 120, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Person 2 (center-left)
+            ctx.beginPath();
+            ctx.arc(600, 350, 100, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Person 3 (center-right)
+            ctx.beginPath();
+            ctx.arc(800, 400, 110, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Person 4 (right)
+            ctx.beginPath();
+            ctx.arc(1000, 450, 90, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add phone glow effect
+            const phoneGlow = ctx.createRadialGradient(600, 350, 0, 600, 350, 200);
+            phoneGlow.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+            phoneGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            
+            ctx.fillStyle = phoneGlow;
+            ctx.fillRect(500, 250, 200, 200);
+            
+            canvas.style.display = 'block';
+        }
+        
+        function downloadCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            const link = document.createElement('a');
+            link.download = 'hero-background.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.8);
+            link.click();
+        }
+    </script>
+</body>
+</html>
+
+
