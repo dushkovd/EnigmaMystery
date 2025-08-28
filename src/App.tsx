@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import HomePage from './pages/HomePage';
-import ShopPage from './pages/ShopPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import MyProductsPage from './pages/MyProductsPage';
-import GameViewerPage from './pages/GameViewerPage';
-import GamePreviewPage from './pages/GamePreviewPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import TermsPage from './pages/TermsPage';
-import FaqPage from './pages/FaqPage';
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const ShopPage = React.lazy(() => import('./pages/ShopPage'));
+const CartPage = React.lazy(() => import('./pages/CartPage'));
+const CheckoutPage = React.lazy(() => import('./pages/Checkout'));
+const CheckoutPageLegacy = React.lazy(() => import('./pages/CheckoutPage'));
+const MyProductsPage = React.lazy(() => import('./pages/MyProductsPage'));
+const GameViewerPage = React.lazy(() => import('./pages/GameViewerPage'));
+const GamePreviewPage = React.lazy(() => import('./pages/GamePreviewPage'));
+const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage'));
+const TermsPage = React.lazy(() => import('./pages/TermsPage'));
+const FaqPage = React.lazy(() => import('./pages/FaqPage'));
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -32,18 +33,21 @@ function AppContent() {
     <>
       <ScrollToTop />
       <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<ShopPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/my-products" element={<MyProductsPage />} />
-          <Route path="/game/:gameId/:screen?" element={<GameViewerPage />} />
-          <Route path="/preview/:gameId" element={<GamePreviewPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/faq" element={<FaqPage />} />
-        </Routes>
+        <React.Suspense fallback={<div />}> 
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout-legacy" element={<CheckoutPageLegacy />} />
+            <Route path="/my-products" element={<MyProductsPage />} />
+            <Route path="/game/:gameId/:screen?" element={<GameViewerPage />} />
+            <Route path="/preview/:gameId" element={<GamePreviewPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+          </Routes>
+        </React.Suspense>
       </Layout>
     </>
   );
