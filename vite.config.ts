@@ -1,16 +1,30 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    visualizer({ 
+      filename: 'stats.html', 
+      gzipSize: true, 
+      brotliSize: true,
+      open: false
+    })
+  ],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
   build: {
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui': ['framer-motion', 'lucide-react'],
+          'stripe': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+          'supabase': ['@supabase/supabase-js']
+        },
       },
     },
   },

@@ -94,14 +94,20 @@ const HomePage: React.FC = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           {/* Try both approaches: img tag and CSS background */}
-          <img 
-            src="/hero-background.png"
-            alt="Hero background"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(1.5)' }}
-            loading="eager"
-            fetchPriority="high"
-          />
+          <picture>
+            <source 
+              srcSet="/hero-background.webp" 
+              type="image/webp" 
+            />
+            <img 
+              src="/hero-background.png"
+              alt="Hero background"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: 'brightness(1.5)' }}
+              loading="eager"
+              fetchPriority="high"
+            />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/40 to-secondary-800/60 mix-blend-multiply"></div>
         </div>
         
