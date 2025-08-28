@@ -172,12 +172,15 @@ const HomePage: React.FC = () => {
              >
                {/* Background Image */}
                <div className="absolute inset-0 z-0">
-                 <img 
-                   src="/one_phone.png"
-                   alt="Feature background"
-                   className="w-full h-full object-cover"
-                   style={{ filter: 'brightness(0.3)' }}
-                 />
+                 <picture>
+                   <source srcSet="/one_phone.webp" type="image/webp" />
+                   <img 
+                     src="/one_phone.png"
+                     alt="Feature background"
+                     className="w-full h-full object-cover"
+                     style={{ filter: 'brightness(0.3)' }}
+                   />
+                 </picture>
                  <div className="absolute inset-0 bg-white/20"></div>
                </div>
                
@@ -207,12 +210,15 @@ const HomePage: React.FC = () => {
              >
                {/* Background Image */}
                <div className="absolute inset-0 z-0">
-                 <img 
-                   src="/groups.png"
-                   alt="Feature background"
-                   className="w-full h-full object-cover"
-                   style={{ filter: 'brightness(0.3)' }}
-                 />
+                 <picture>
+                   <source srcSet="/groups.webp" type="image/webp" />
+                   <img 
+                     src="/groups.png"
+                     alt="Feature background"
+                     className="w-full h-full object-cover"
+                     style={{ filter: 'brightness(0.3)' }}
+                   />
+                 </picture>
                  <div className="absolute inset-0 bg-white/20"></div>
                </div>
                
@@ -242,12 +248,15 @@ const HomePage: React.FC = () => {
              >
                {/* Background Image */}
                <div className="absolute inset-0 z-0">
-                 <img 
-                   src="/fun.png"
-                   alt="Feature background"
-                   className="w-full h-full object-cover"
-                   style={{ filter: 'brightness(0.3)' }}
-                 />
+                 <picture>
+                   <source srcSet="/fun.webp" type="image/webp" />
+                   <img 
+                     src="/fun.png"
+                     alt="Feature background"
+                     className="w-full h-full object-cover"
+                     style={{ filter: 'brightness(0.3)' }}
+                   />
+                 </picture>
                  <div className="absolute inset-0 bg-white/20"></div>
                </div>
                
