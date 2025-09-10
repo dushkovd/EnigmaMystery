@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "node scripts/prepare-html.js && vite build",
     "build:staging": "node scripts/build-staging.js",
-    "build:production": "node scripts/prepare-html.js && vite build",
+    "build:production": "node scripts/build-production.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
