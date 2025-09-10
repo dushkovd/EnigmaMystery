@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'esbuild',
-    cssCodeSplit: true, // Split CSS for better LCP
+    cssCodeSplit: false, // Keep CSS together for faster FCP
     sourcemap: false,
     rollupOptions: {
       output: {
