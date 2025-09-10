@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'esbuild',
-    cssCodeSplit: false, // Keep CSS together for faster FCP
+    cssCodeSplit: false,
     sourcemap: false,
     rollupOptions: {
       output: {
@@ -26,7 +26,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500, // Reduced from 1000
   },
   esbuild: {
     drop: ['console', 'debugger'],
