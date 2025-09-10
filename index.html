@@ -207,25 +207,7 @@
       <div class="loading">Loading...</div>
     </div>
     
-    <!-- Load React app lazily after critical content -->
-    <script>
-      // Load React app after critical content is visible
-      function loadReactApp() {
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = '/src/main.tsx';
-        script.defer = true;
-        document.head.appendChild(script);
-      }
-      
-      // Load React app after 2 seconds or when user interacts
-      setTimeout(loadReactApp, 2000);
-      
-      // Load React app immediately on user interaction
-      ['click', 'scroll', 'keydown', 'touchstart'].forEach(event => {
-        document.addEventListener(event, loadReactApp, { once: true });
-      });
-    </script>
+    <script type="module" src="/src/main.tsx" defer></script>
     <script>
       // Progressive loading strategy
       (function() {
@@ -282,13 +264,13 @@
             document.head.appendChild(fbScript);
           }, 2000);
           
-          // 4. Preconnect to Supabase (after 5s - only when needed)
+          // 4. Preconnect to Supabase (after 3s)
           setTimeout(() => {
             const supabaseLink = document.createElement('link');
             supabaseLink.rel = 'preconnect';
             supabaseLink.href = 'https://gkuwrqpxwehfnmlsqsxa.supabase.co';
             document.head.appendChild(supabaseLink);
-          }, 5000);
+          }, 3000);
         }
         
         // Start progressive loading immediately
