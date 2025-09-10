@@ -1,0 +1,19 @@
+warning: in the working copy of 'index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'public/.htaccess', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/App.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/layout/Footer.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/utils/analytics.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'vite.config.ts', LF will be replaced by CRLF the next time Git touches it
+.github/workflows/production-deployment.yml
+.github/workflows/staging-deployment.yml
+README.md
+comprehensive_character_fix.sql
+debug_character_access.sql
+hero-background-generator.html
+index.html
+package-lock.json
+package.json
+public/hero-background.webp
+vite.config.ts

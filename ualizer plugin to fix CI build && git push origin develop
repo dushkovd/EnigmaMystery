@@ -1,0 +1,3 @@
+[33m6a5ad30[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m perf: add bundle analyzer, chunk splitting, WebP hero image (32% JS reduction)
+[33mee58c1e[m fix: restore hero PNG rendering (revert <picture> change)
+[33mbef836c[m perf: lazy-load routes, idle-load analytics, responsive hero image

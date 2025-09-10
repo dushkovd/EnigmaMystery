@@ -9,6 +9,10 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    cssCodeSplit: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -17,7 +21,15 @@ export default defineConfig({
           'stripe': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           'supabase': ['@supabase/supabase-js']
         },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
+    chunkSizeWarningLimit: 1000,
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
   },
 });
+
