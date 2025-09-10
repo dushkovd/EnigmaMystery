@@ -25,8 +25,8 @@ jobs:
         run: npm install
         # Installs all the project dependencies from package-lock.json
 
-      - name: Build project
-        run: npm run build
+      - name: Build project for staging
+        run: npm run build:staging
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
