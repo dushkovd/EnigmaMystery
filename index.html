@@ -6,14 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Premium murder mystery games for unforgettable parties and events" />
     <meta name="theme-color" content="#1a1a1a" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Preconnect for Supabase - will be replaced at build time -->
-    <link rel="preconnect" href="https://gkuwrqpxwehfnmlsqsxa.supabase.co">
-    <link rel="dns-prefetch" href="https://connect.facebook.net">
-    <link rel="dns-prefetch" href="https://www.clarity.ms">
-    <link rel="dns-prefetch" href="https://js.stripe.com">
-    <link rel="dns-prefetch" href="https://api.stripe.com">
+    <!-- Only critical preloads for instant render -->
     <link rel="preload" as="image" href="/hero-background.webp" type="image/webp" fetchpriority="high">
     <style>
       /* Ultra-minimal critical CSS for instant FCP */
@@ -113,86 +106,66 @@
       .loaded .loading { display: none; }
     </style>
     <title>Murder Mystery Games</title>
-    <script type="text/javascript">
-      (function(){
-        var load3p = function(){
-          (function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-          })(window, document, "clarity", "script", "smi0wej6y2");
-        };
-        if ('requestIdleCallback' in window) { requestIdleCallback(load3p, { timeout: 2000 }); }
-        else { setTimeout(load3p, 1500); }
-      })();
-    </script>
-    <!-- Facebook Pixel Code -->
-    <script>
-    (function(){
-      var loadFb = function(){
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window,document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1287939146186577');
-        fbq('track', 'PageView');
-      };
-      if ('requestIdleCallback' in window) { requestIdleCallback(loadFb, { timeout: 2000 }); }
-      else { setTimeout(loadFb, 1500); }
-    })();
-    </script>
-    <!-- End Facebook Pixel Code -->
   </head>
   <body>
-    <!-- Facebook Pixel Noscript -->
-    <noscript>
-      <img height="1" width="1" 
-      src="https://www.facebook.com/tr?id=1287939146186577&ev=PageView&noscript=1"/>
-    </noscript>
-    <!-- End Facebook Pixel Noscript -->
     
-    <div id="root">
-      <!-- Immediate hero content for instant LCP -->
-      <div class="hero">
-        <img src="/hero-background.webp" alt="Hero background" class="hero-bg" loading="eager" fetchpriority="high">
-        <div class="hero-content">
-          <h1 class="hero-title">Host the Perfect Murder Mystery Night</h1>
-          <p class="hero-subtitle">Immersive digital murder mystery games for unforgettable parties</p>
-          <div>
-            <a href="/shop" class="btn">Explore Games</a>
-            <a href="/how-it-works" class="btn btn-outline">How It Works</a>
-          </div>
+    <!-- Pure HTML content - no JavaScript blocking -->
+    <div class="hero">
+      <img src="/hero-background.webp" alt="Hero background" class="hero-bg" loading="eager" fetchpriority="high">
+      <div class="hero-content">
+        <h1 class="hero-title">Host the Perfect Murder Mystery Night</h1>
+        <p class="hero-subtitle">Immersive digital murder mystery games for unforgettable parties</p>
+        <div>
+          <a href="/shop" class="btn">Explore Games</a>
+          <a href="/how-it-works" class="btn btn-outline">How It Works</a>
         </div>
       </div>
-      <div class="loading">Loading...</div>
     </div>
     
-    <script type="module" src="/src/main.tsx" defer></script>
+    <!-- React app container - hidden until hydrated -->
+    <div id="root" style="display: none;"></div>
+    
+    <!-- Load everything after initial paint -->
     <script>
-      // Remove loading state when React loads
+      // Load React and analytics after initial paint
       window.addEventListener('load', function() {
-        document.body.classList.add('loaded');
-      });
-      
-      // Load non-critical CSS asynchronously
-      (function() {
-        const loadCSS = function(href) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = href;
-          document.head.appendChild(link);
+        // Load React app
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = '/src/main.tsx';
+        document.head.appendChild(script);
+        
+        // Show React app when ready
+        script.onload = function() {
+          document.getElementById('root').style.display = 'block';
+          document.querySelector('.hero').style.display = 'none';
         };
         
-        // Load fonts and full CSS after critical content
+        // Load analytics after initial render
         setTimeout(() => {
-          loadCSS('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap');
-          loadCSS('/src/index.css');
-        }, 100);
-      })();
+          // Load Clarity
+          const clarityScript = document.createElement('script');
+          clarityScript.src = 'https://www.clarity.ms/tag/smi0wej6y2';
+          clarityScript.async = true;
+          document.head.appendChild(clarityScript);
+          
+          // Load Facebook Pixel
+          const fbScript = document.createElement('script');
+          fbScript.innerHTML = `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1287939146186577');
+            fbq('track', 'PageView');
+          `;
+          document.head.appendChild(fbScript);
+        }, 1000);
+      });
     </script>
   </body>
 </html>
