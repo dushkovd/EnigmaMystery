@@ -18,8 +18,7 @@
 
 @layer components {
   .btn {
-    /* Keep lightweight hover feel without expensive layout/transform transitions */
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-150;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
   
   .btn-primary {
@@ -47,7 +46,7 @@
   }
   
   .card-hover {
-    @apply hover:shadow-md; /* remove transforms and transitions for perf */
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
   
   .input {
@@ -87,4 +86,12 @@
   }
 }
 
-/* Removed custom animations for performance */
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}

@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   publicDir: 'public',
   optimizeDeps: {
-    exclude: ['lucide-react', 'framer-motion'],
+    exclude: ['lucide-react'],
   },
   build: {
     target: 'esnext',
@@ -17,7 +17,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui': ['lucide-react'],
+          'ui': ['framer-motion', 'lucide-react'],
           'stripe': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           'supabase': ['@supabase/supabase-js']
         },
@@ -27,12 +27,6 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 500, // Reduced from 1000
-  },
-  resolve: {
-    alias: {
-      // Map framer-motion to a no-op module to avoid runtime errors where imports remain
-      'framer-motion': '/src/noop-framer-motion.ts'
-    }
   },
   esbuild: {
     drop: ['console', 'debugger'],

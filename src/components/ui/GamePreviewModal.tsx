@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// Animations removed for performance
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Users, Clock, Award, ShoppingCart, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Game, Character as GameCharacter, getLargestGameVariation } from '../../api/games';
 import { useLanguage } from '../../context/LanguageContext';

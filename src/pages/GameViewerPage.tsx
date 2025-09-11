@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Home, Loader2 } from 'lucide-react';
-// Animations removed for performance
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { getGameById, getGameVariations, getGameVariation, GameWithDetails, GameVariation } from '../api/games';
@@ -285,9 +285,17 @@ const GameViewerPage: React.FC = () => {
           {/* Game Screen Content */}
           <div className="vintage-border">
             <div className="vintage-border-inner">
-              <div>
-                {renderScreen()}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentScreen}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {renderScreen()}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
           

@@ -1,5 +1,5 @@
 import React from 'react';
-// Animations removed for performance
+import { motion } from 'framer-motion';
 import { Round, Clue } from '../../api/games';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -16,7 +16,11 @@ const CluesScreen: React.FC<CluesScreenProps> = ({ round, startingClueNumber = 1
 
   return (
     <div className="mystery-paper p-6 rounded-lg">
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <h2 className="text-2xl font-display font-bold text-center mb-6">
           <span className="mr-2">🔍</span>
           {t('game.round')} {roundTitle}
@@ -28,9 +32,12 @@ const CluesScreen: React.FC<CluesScreenProps> = ({ round, startingClueNumber = 1
         
         <div className="space-y-4">
           {round.clues.map((clue, index) => (
-            <div
+            <motion.div
               key={clue.clue_id}
               className="clue-card"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
             >
               <div className="flex">
                 <div className="flex-shrink-0 mr-3">
@@ -42,10 +49,10 @@ const CluesScreen: React.FC<CluesScreenProps> = ({ round, startingClueNumber = 1
                   <p className="text-secondary-800">{language === 'bg' ? clue.content_bg || clue.content : clue.content}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-// Animations removed for performance
+import { motion } from 'framer-motion';
 import { GameWithDetails } from '../../api/games';
 import { useLanguage } from '../../context/LanguageContext';
 import { formatDuration } from '../../utils/durationFormatter';
@@ -35,7 +35,11 @@ const IntroductionScreen: React.FC<IntroductionScreenProps> = ({ game, variation
   
   return (
     <div className="mystery-paper p-6 rounded-lg">
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <h2 className="text-2xl font-display font-bold text-center mb-6">
           {t('game.scenario')} "{title}"
         </h2>
@@ -74,7 +78,7 @@ const IntroductionScreen: React.FC<IntroductionScreenProps> = ({ game, variation
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

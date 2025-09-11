@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// Animations removed for performance
+import { MotionDiv } from '../components/MotionDiv';
+import { motion } from 'framer-motion';
 import { Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
 import { Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
@@ -115,12 +116,12 @@ const HomePage: React.FC = () => {
           <div 
             className="max-w-3xl mx-auto text-center text-white"
           >
-                                      <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
-               {t('home.hero.title')} <span className="text-accent-400" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
-              </h1>
-                                      <p className="text-lg md:text-xl text-secondary-200 mb-8 leading-relaxed" style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
-               {t('home.hero.subtitle')}
-              </p>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
+              {t('home.hero.title')} <span className="text-accent-400" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
+            </h1>
+            <p className="text-lg md:text-xl text-secondary-200 mb-8 leading-relaxed" style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
+              {t('home.hero.subtitle')}
+            </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/shop" className="btn-accent text-lg" state={{ preventScroll: true }}>
                 {t('home.hero.exploreGames')}
@@ -133,18 +134,13 @@ const HomePage: React.FC = () => {
         </div>
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="animate-bounce"
-          >
+          <div className="animate-bounce">
             <a href="#featured" className="text-white">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -153,125 +149,121 @@ const HomePage: React.FC = () => {
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-black">
-              {language === 'bg' ? 'Какво Представлява?' : 'What It\'s All About?'}
+              {language === 'bg' ? 'Какво Представлява?' : 'What\'s All About?'}
             </h2>
             <div className="w-24 h-1 bg-accent-500 mx-auto mb-6"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                         {/* Feature 1: One Device Controls Everything */}
-             <motion.div 
+            {/* Feature 1: One Device Controls Everything */}
+            <div 
                className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.1 }}
              >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/one_phone.webp" type="image/webp" />
-                   <img 
-                     src="/one_phone.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? 'Едно устройство' : 'One Device'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Използвайте един телефон, таблет или компютър, който да ви навигира през цялата игра.' : 'Use any phone, tablet, or computer to guide the entire game. No printing, no setup hassle - just start and play.'}
-                  </p>
-               </div>
-             </motion.div>
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <picture>
+                  <source srcSet="/one_phone.webp" type="image/webp" />
+                  <img 
+                    src="/one_phone.png"
+                    alt="Feature background"
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.3)' }}
+                  />
+                </picture>
+                <div className="absolute inset-0 bg-white/20"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                  {language === 'bg' ? 'Едно устройство' : 'One Device'}
+                </h3>
+                <p className="text-white leading-relaxed">
+                  {language === 'bg' ? 'Използвайте един телефон, таблет или компютър, който да ви навигира през цялата игра.' : 'Use any phone, tablet, or computer to guide the entire game. No printing, no setup hassle - just start and play.'}
+                </p>
+              </div>
+            </div>
 
-                         {/* Feature 2: Perfect for Groups */}
-             <motion.div 
-               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.2 }}
-             >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/groups.webp" type="image/webp" />
-                   <img 
-                     src="/groups.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? '4 - 10 играчи' : '4 to 10 people'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Различни вариации на игрите за компании от 4 до 10 души, събрани на живо.' : 'Designed for 4-10 players gathering in person. Each player gets a unique character with secrets and motives.'}
-                  </p>
-               </div>
-             </motion.div>
+            {/* Feature 2 */}
+            <MotionDiv 
+              className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <picture>
+                  <source srcSet="/groups.webp" type="image/webp" />
+                  <img 
+                    src="/groups.png"
+                    alt="Feature background"
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.3)' }}
+                  />
+                </picture>
+                <div className="absolute inset-0 bg-white/20"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                  {language === 'bg' ? '4 - 10 играчи' : '4 to 10 people'}
+                </h3>
+                <p className="text-white leading-relaxed">
+                  {language === 'bg' ? 'Различни вариации на игрите за компании от 4 до 10 души, събрани на живо.' : 'Designed for 4-10 players gathering in person. Each player gets a unique character with secrets and motives.'}
+                </p>
+              </div>
+            </MotionDiv>
 
-                         {/* Feature 3: 2 Hours of Entertainment */}
-             <motion.div 
-               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.3 }}
-             >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/fun.webp" type="image/webp" />
-                   <img 
-                     src="/fun.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? 'Два часа забавление' : '2 Hours of Entertainment'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Всяка игра осигурява между 1 и 3 часа забавление в решаване на мистерии.' : 'Each game provides between 1 to 3 hours of immersive mystery-solving fun, perfect for dinner parties or game nights.'}
-                  </p>
-               </div>
-             </motion.div>
+            {/* Feature 3 */}
+            <MotionDiv 
+              className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <picture>
+                  <source srcSet="/fun.webp" type="image/webp" />
+                  <img 
+                    src="/fun.png"
+                    alt="Feature background"
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.3)' }}
+                  />
+                </picture>
+                <div className="absolute inset-0 bg-white/20"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 1.343-3 3v5H7a2 2 0 100 4h10a2 2 0 100-4h-2v-5c0-1.657-1.343-3-3-3z" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
+                  {language === 'bg' ? '2 часа забавление' : '2 Hours of Entertainment'}
+                </h3>
+                <p className="text-white leading-relaxed">
+                  {language === 'bg' ? 'Потопете се в разследване, интриги и драматични разкрития. Перфектно за парти вечер.' : 'Dive into investigation, intrigue, and dramatic reveals. Perfect for a party evening.'}
+                </p>
+              </div>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -391,12 +383,8 @@ const HomePage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <motion.div 
+            <div 
               className="text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
             >
               <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -407,15 +395,11 @@ const HomePage: React.FC = () => {
               <p className="text-secondary-600">
                 {t('home.howItWorks.step1.desc')}
               </p>
-            </motion.div>
+            </div>
 
             {/* Step 2 */}
-            <motion.div 
+            <div 
               className="text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -426,7 +410,7 @@ const HomePage: React.FC = () => {
               <p className="text-secondary-600">
                 {t('home.howItWorks.step2.desc')}
               </p>
-            </motion.div>
+            </div>
 
             {/* Step 3 */}
             <motion.div 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// Animations removed for performance
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Character } from '../../api/games';
 import { useLanguage } from '../../context/LanguageContext';
@@ -23,17 +23,23 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
   const getCircumstances = (character: Character) => language === 'bg' ? character.circumstances_bg || character.circumstances : character.circumstances;
 
   return (
-    <>
+    <AnimatePresence>
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div
+          <motion.div
             className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={onClose}
           >
             {/* Modal */}
-            <div
+            <motion.div
               className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -106,18 +112,11 @@ const SecretModal: React.FC<SecretModalProps> = ({ character, isOpen, onClose })
                   {t('common.close')}
                 </button>
               </div>
-            </div>
-          </div>
-          {/* Close button */}
-          <button
-            className="fixed top-4 right-4 z-50 text-white"
-            onClick={onClose}
-          >
-            <X className="w-6 h-6" />
-          </button>
+            </motion.div>
+          </motion.div>
         </>
       )}
-    </>
+    </AnimatePresence>
   );
 };
 
@@ -142,7 +141,11 @@ const CharactersScreen: React.FC<CharactersScreenProps> = ({ characters }) => {
   return (
     <>
       <div className="mystery-paper p-6 rounded-lg">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-2xl font-display font-bold text-center mb-6">{t('game.characters')}</h2>
           
           <p className="text-secondary-700 mb-6 italic">
@@ -150,10 +153,13 @@ const CharactersScreen: React.FC<CharactersScreenProps> = ({ characters }) => {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {characters.map((character) => (
-              <div
+            {characters.map((character, index) => (
+              <motion.div
                 key={character.character_id}
                 className="bg-white p-4 rounded shadow-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
                 <div className="font-display font-medium text-lg mb-2">{getName(character)}</div>
                 <p className="text-secondary-600 text-sm mb-4">{getDescription(character)}</p>
@@ -171,10 +177,10 @@ const CharactersScreen: React.FC<CharactersScreenProps> = ({ characters }) => {
                     </button>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Secret Modal */}

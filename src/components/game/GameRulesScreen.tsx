@@ -1,5 +1,5 @@
 import React from 'react';
-// Animations removed for performance
+import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 
 const GameRulesScreen: React.FC = () => {
@@ -32,7 +32,11 @@ const GameRulesScreen: React.FC = () => {
 
   return (
     <div className="mystery-paper p-6 rounded-lg">
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <h2 className="text-2xl font-display font-bold text-center mb-8">
           <span className="mr-2">📋</span>
           {content.title}
@@ -40,14 +44,17 @@ const GameRulesScreen: React.FC = () => {
         
         <div className="space-y-6">
           {content.rules.map((rule, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
               className={`${
                 index === 2 ? 'font-semibold text-lg text-primary-700' : 'text-secondary-700'
               } leading-relaxed`}
             >
               {rule}
-            </div>
+            </motion.div>
           ))}
         </div>
         
@@ -59,7 +66,7 @@ const GameRulesScreen: React.FC = () => {
             }
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-// Animations removed for performance
+import { motion } from 'framer-motion';
 import AuthForm from '../components/AuthForm';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -31,12 +31,16 @@ const ResetPasswordPage: React.FC = () => {
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
         <div className="max-w-md mx-auto">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <AuthForm
               onSuccess={handleResetSuccess}
               title={t('auth.resetPassword')}
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

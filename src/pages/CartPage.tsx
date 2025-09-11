@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// Animations removed for performance
+import { motion } from 'framer-motion';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -37,7 +37,12 @@ const CartPage: React.FC = () => {
       <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center py-16">
+            <motion.div
+              className="text-center py-16"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="mb-6">
                 <ShoppingCart className="w-16 h-16 text-secondary-400 mx-auto" />
               </div>
@@ -48,7 +53,7 @@ const CartPage: React.FC = () => {
               <Link to="/shop" className="btn-primary">
                 {t('cart.empty.browseGames')}
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -59,7 +64,11 @@ const CartPage: React.FC = () => {
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
@@ -105,9 +114,12 @@ const CartPage: React.FC = () => {
                       const duration = formatDuration(game.duration || '', language);
                       
                       return (
-                        <div
+                        <motion.div
                           key={game.id}
                           className="p-6"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 space-y-2 sm:space-y-0 w-full">
                             {/* Game Image */}
@@ -172,7 +184,7 @@ const CartPage: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -221,7 +233,7 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

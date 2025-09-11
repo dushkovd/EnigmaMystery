@@ -4,7 +4,7 @@ import { Menu, X, ShoppingCart, User, Layers, Globe } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useLanguage } from '../../context/LanguageContext';
-// Animations removed for performance
+import { motion, AnimatePresence } from 'framer-motion';
 import AuthForm from '../AuthForm';
 
 const Navbar: React.FC = () => {
@@ -112,10 +112,14 @@ const Navbar: React.FC = () => {
                   <span className="text-sm font-medium">{language.toUpperCase()}</span>
                 </button>
                 
-                {showLanguageMenu && (
-                  <div
-                    className="absolute top-full right-0 mt-2 bg-white rounded-md shadow-lg border border-secondary-200 overflow-hidden"
-                  >
+                <AnimatePresence>
+                  {showLanguageMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full right-0 mt-2 bg-white rounded-md shadow-lg border border-secondary-200 overflow-hidden"
+                    >
                       <button
                         onClick={() => { setLanguage('en'); setShowLanguageMenu(false); }}
                         className={`block w-full px-4 py-2 text-left hover:bg-secondary-50 transition-colors ${
@@ -132,8 +136,9 @@ const Navbar: React.FC = () => {
                       >
                         {t('nav.bulgarian')}
                       </button>
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {isAuthenticated ? (
@@ -179,10 +184,15 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <div
-            className="mobile-menu md:hidden bg-secondary-700 absolute w-full"
-          >
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="mobile-menu md:hidden bg-secondary-700 absolute w-full"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+            >
               <nav className="container-custom py-4 flex flex-col space-y-4">
                 <Link to="/" className="text-white hover:text-accent-400 transition-colors py-2 font-medium">
                   {t('nav.home')}
@@ -234,28 +244,37 @@ const Navbar: React.FC = () => {
                   </Link>
                 </div>
               </nav>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
-      {/* Auth Modal (no animation) */}
-      {showAuthModal && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-          onClick={() => setShowAuthModal(false)}
-        >
-          <div
-            className="max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
+      {/* Auth Modal */}
+      <AnimatePresence>
+        {showAuthModal && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAuthModal(false)}
           >
-            <AuthForm
-              onSuccess={handleAuthSuccess}
-              onCancel={() => setShowAuthModal(false)}
-              showCancelButton={true}
-            />
-          </div>
-        </div>
-      )}
+            <motion.div
+              className="max-w-md w-full"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AuthForm
+                onSuccess={handleAuthSuccess}
+                onCancel={() => setShowAuthModal(false)}
+                showCancelButton={true}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
