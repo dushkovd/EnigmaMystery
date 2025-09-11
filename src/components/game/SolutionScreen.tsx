@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { AlertCircle } from 'lucide-react';
 import { FinalReveal } from '../../api/games';
 import { useLanguage } from '../../context/LanguageContext';
@@ -14,11 +14,7 @@ const SolutionScreen: React.FC<SolutionProps> = ({ solution }) => {
   
   return (
     <div className="mystery-paper p-6 rounded-lg">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div>
         <h2 className="text-2xl font-display font-bold text-center mb-6">
           <span className="mr-2">🧩</span>
           {t('game.solution')}
@@ -47,35 +43,30 @@ const SolutionScreen: React.FC<SolutionProps> = ({ solution }) => {
             </button>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div>
             <div className="bg-primary-50 border-2 border-primary-100 p-4 rounded-md mb-6">
               <h3 className="font-display text-xl font-bold text-primary-700 mb-2">
                 {t('game.murderer')}
               </h3>
               <p className="text-primary-800 font-bold text-lg">{language === 'bg' ? solution.murderer_bg || solution.murderer : solution.murderer}</p>
             </div>
-            
-            <div>
-              <h3 className="font-display text-xl font-bold mb-3">{t('game.explanation')}</h3>
-              <p className="text-secondary-700 leading-relaxed">
-                {language === 'bg' ? solution.content_bg || solution.content : solution.content}
-              </p>
+
+            <div className="bg-green-50 border-2 border-green-100 p-4 rounded-md mb-6">
+              <h3 className="font-display text-xl font-bold text-green-700 mb-2">
+                {t('game.motive')}
+              </h3>
+              <p className="text-green-800">{language === 'bg' ? solution.motive_bg || solution.motive : solution.motive}</p>
             </div>
-            <div className="mt-8 text-center">
-              <p className="text-secondary-600 italic mb-4">
-                {t('game.enjoyedGame')}
-              </p>
-              <a href="/my-products" className="btn-primary">
-                {t('game.backToMyGames')}
-              </a>
+
+            <div className="bg-blue-50 border-2 border-blue-100 p-4 rounded-md">
+              <h3 className="font-display text-xl font-bold text-blue-700 mb-2">
+                {t('game.weapon')}
+              </h3>
+              <p className="text-blue-800">{language === 'bg' ? solution.weapon_bg || solution.weapon : solution.weapon}</p>
             </div>
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };

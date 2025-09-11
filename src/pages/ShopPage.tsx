@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import GameCard from '../components/ui/GameCard';
 import { getActiveGames, Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
@@ -43,11 +43,8 @@ const ShopPage: React.FC = () => {
         </div>
         
         <div className="container-custom relative z-10">
-          <motion.div 
+          <div 
             className="max-w-2xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
           >
             <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               {t('shop.hero.title')}
@@ -55,7 +52,7 @@ const ShopPage: React.FC = () => {
             <p className="text-secondary-200 text-lg">
               {t('shop.hero.subtitle')}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -91,14 +88,9 @@ const ShopPage: React.FC = () => {
           ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {games.map((game, index) => (
-              <motion.div
-                  key={game.game_id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
+              <div key={game.game_id}>
                 <GameCard game={game} />
-              </motion.div>
+              </div>
             ))}
           </div>
           )}

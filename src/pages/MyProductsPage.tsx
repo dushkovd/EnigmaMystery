@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { BookOpen, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getUserGames } from '../api/games';
@@ -47,11 +47,7 @@ const MyProductsPage: React.FC = () => {
     <div className="pt-24 pb-16">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
+          <div>
             <div className="flex items-center justify-between mb-8">
               <h1 className="page-title">{t('myProducts.title')}</h1>
             </div>
@@ -69,14 +65,9 @@ const MyProductsPage: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {purchasedGames.map((game, index) => (
-                    <motion.div
-                      key={`${game.id}-${index}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                    >
+                    <div key={`${game.id}-${index}`}>
                       <GameCard game={game} purchased={true} />
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </>
@@ -94,7 +85,7 @@ const MyProductsPage: React.FC = () => {
                 </a>
               </div>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

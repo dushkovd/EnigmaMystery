@@ -4,8 +4,8 @@ Write-Host "Building for production..." -ForegroundColor Blue
 # Load production environment variables
 if (Test-Path ".env.production") {
     Get-Content ".env.production" | ForEach-Object {
-        if ( -match "^([^#][^=]+)=(.*)$") {
-            [Environment]::SetEnvironmentVariable([1], [2], "Process")
+        if ($_ -match "^([^#][^=]+)=(.*)$") {
+            [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
         }
     }
     Write-Host "Loaded environment variables from .env.production" -ForegroundColor Green

@@ -78,9 +78,13 @@ export interface FinalReveal {
   variation_id: number;
   content: string;
   murderer?: string;
+  motive?: string;
+  weapon?: string;
   // Bulgarian fields
   content_bg?: string;
   murderer_bg?: string;
+  motive_bg?: string;
+  weapon_bg?: string;
 }
 
 export interface GameWithDetails extends Game {

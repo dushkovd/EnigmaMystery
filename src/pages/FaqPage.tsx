@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { useLanguage } from '../context/LanguageContext';
 
 const FaqItem = ({ q, a }: { q: string, a: string }) => (
@@ -26,12 +26,7 @@ const FaqPage: React.FC = () => {
   return (
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-3xl mx-auto"
-        >
+        <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl font-display font-bold text-center mb-8">{t('faq.title')}</h1>
           <div className="space-y-6">
             {faqData.map((faq, index) => (
@@ -42,7 +37,7 @@ const FaqPage: React.FC = () => {
               />
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
