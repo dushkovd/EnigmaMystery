@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   publicDir: 'public',
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ['lucide-react', 'framer-motion'],
   },
   build: {
     target: 'esnext',
@@ -27,6 +27,12 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 500, // Reduced from 1000
+  },
+  resolve: {
+    alias: {
+      // Map framer-motion to a no-op module to avoid runtime errors where imports remain
+      'framer-motion': '/src/noop-framer-motion.ts'
+    }
   },
   esbuild: {
     drop: ['console', 'debugger'],
