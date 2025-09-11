@@ -11,7 +11,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { motion, AnimatePresence } from 'framer-motion';
+// Animations removed for performance
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { formatPrice, getStripeCurrencyCode, CURRENCY_CONFIG, getEffectivePrice } from '../utils/currencyFormatter';

@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -96,11 +96,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <div className="pt-24 pb-16 min-h-screen bg-secondary-50">
       <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
         <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-8 text-center">{t('checkout.title')}</h1>
             {!isAuthenticated && !authComplete ? (
@@ -116,7 +112,7 @@ const CheckoutPage: React.FC = () => {
               </Suspense>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

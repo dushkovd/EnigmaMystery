@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { Eye } from 'lucide-react';
 import { Game } from '../../api/games';
 import { useCart } from '../../context/CartContext';
