@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// Animations removed for performance
 import { Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
 import { Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
@@ -112,11 +112,8 @@ const HomePage: React.FC = () => {
         </div>
         
         <div className="container-custom relative z-10 mt-20 md:mt-0">
-          <motion.div 
+          <div 
             className="max-w-3xl mx-auto text-center text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
           >
                                       <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
                {t('home.hero.title')} <span className="text-accent-400" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
@@ -132,7 +129,7 @@ const HomePage: React.FC = () => {
                 {t('home.hero.howItWorks')}
               </a>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">
