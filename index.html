@@ -231,13 +231,7 @@
             document.head.appendChild(fontLink);
           }, 500);
           
-          // 2. Load full CSS (after 1s)
-          setTimeout(() => {
-            const cssLink = document.createElement('link');
-            cssLink.rel = 'stylesheet';
-            cssLink.href = '/src/index.css';
-            document.head.appendChild(cssLink);
-          }, 1000);
+          // 2. App CSS is included by the bundler in production; no runtime injection needed
           
           // 3. Load analytics (after 2s)
           setTimeout(() => {

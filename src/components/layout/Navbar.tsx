@@ -238,32 +238,24 @@ const Navbar: React.FC = () => {
         )}
       </header>
 
-      {/* Auth Modal */}
-      <AnimatePresence>
-        {showAuthModal && (
-          <motion.div
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowAuthModal(false)}
+      {/* Auth Modal (no animation) */}
+      {showAuthModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowAuthModal(false)}
+        >
+          <div
+            className="max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              className="max-w-md w-full"
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AuthForm
-                onSuccess={handleAuthSuccess}
-                onCancel={() => setShowAuthModal(false)}
-                showCancelButton={true}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <AuthForm
+              onSuccess={handleAuthSuccess}
+              onCancel={() => setShowAuthModal(false)}
+              showCancelButton={true}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
