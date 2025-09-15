@@ -6,9 +6,10 @@ import { useLanguage } from '../../context/LanguageContext';
 
 interface SolutionProps {
   solution: FinalReveal;
+  onReveal?: () => void;
 }
 
-const SolutionScreen: React.FC<SolutionProps> = ({ solution }) => {
+const SolutionScreen: React.FC<SolutionProps> = ({ solution, onReveal }) => {
   const [revealed, setRevealed] = useState(false);
   const { t, language } = useLanguage();
   
@@ -40,7 +41,7 @@ const SolutionScreen: React.FC<SolutionProps> = ({ solution }) => {
             </p>
             
             <button 
-              onClick={() => setRevealed(true)}
+              onClick={() => { setRevealed(true); onReveal?.(); }}
               className="btn-primary"
             >
               {t('game.revealSolution')}

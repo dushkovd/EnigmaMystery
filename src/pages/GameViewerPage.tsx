@@ -25,6 +25,7 @@ const GameViewerPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedVariationId, setSelectedVariationId] = useState<number | null>(null);
   const [showPlayerSelection, setShowPlayerSelection] = useState(false);
+  const [solutionRevealed, setSolutionRevealed] = useState(false);
 
   // Initialize game progress with the actual game state
   const {
@@ -218,7 +219,7 @@ const GameViewerPage: React.FC = () => {
       const finalReveal = Array.isArray(selectedVariation.final_reveal)
         ? selectedVariation.final_reveal[0]
         : selectedVariation.final_reveal;
-      return <SolutionScreen solution={finalReveal} />;
+      return <SolutionScreen solution={finalReveal} onReveal={() => setSolutionRevealed(true)} />;
     }
 
     // Handle rounds dynamically
@@ -304,20 +305,33 @@ const GameViewerPage: React.FC = () => {
             <button
               onClick={goToPreviousScreen}
               disabled={isFirstScreen}
-              className={`btn ${isFirstScreen ? 'bg-secondary-200 cursor-not-allowed text-secondary-400' : 'btn-outline'}`}
+              className={isFirstScreen ? 'px-4 py-2 rounded bg-secondary-200 text-secondary-400 cursor-not-allowed' : 'btn-outline'}
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
               {t('game.previous')}
             </button>
-            
-            <button
-              onClick={goToNextScreen}
-              disabled={isLastScreen}
-              className={`btn ${isLastScreen ? 'bg-secondary-200 cursor-not-allowed text-secondary-400' : 'btn-primary'}`}
-            >
-              {isLastScreen ? t('game.solutionRevealed') : t('game.next')}
-              {!isLastScreen && <ChevronRight className="w-4 h-4 ml-1" />}
-            </button>
+
+            {/* Next / Solution Revealed button logic */}
+            {currentScreen === 'solution' ? (
+              solutionRevealed ? (
+                <button
+                  disabled
+                  className="px-4 py-2 rounded bg-secondary-200 text-secondary-400 cursor-not-allowed"
+                >
+                  {t('game.solutionRevealed')}
+                </button>
+              ) : (
+                <div className="px-4 py-2 rounded opacity-0 pointer-events-none select-none">{t('game.next')}</div>
+              )
+            ) : (
+              <button
+                onClick={goToNextScreen}
+                className="btn-primary"
+              >
+                {t('game.next')}
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </button>
+            )}
           </div>
         </div>
       </div>

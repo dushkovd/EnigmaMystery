@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
 import { Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
@@ -15,60 +15,61 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { games, loading, error } = useGames();
   const [featuredGame, setFeaturedGame] = useState<Game | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [howItWorksSlide, setHowItWorksSlide] = useState(0);
 
-  // Carousel images for hero background
-  const carouselImages = [
-    { src: '/hero-background.webp', fallback: '/hero-background.png' },
-    { src: '/one_phone.webp', fallback: '/one_phone.png' },
-    { src: '/fun.webp', fallback: '/fun.png' }
-  ];
+  // Static hero background image
+  const heroImage = { src: '/hero-background.webp', fallback: '/hero-background.png' };
 
   useEffect(() => {
     document.title = t('home.pageTitle');
     if (!loading && games.length > 0) {
       const featured = games.find(game => game.featured) || games[0];
       setFeaturedGame(featured);
+      setCurrentGameIndex(0);
     }
   }, [games, loading, t]);
 
-  // Auto-rotate carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
-    }, 5000); // Change slide every 5 seconds
+  // Removed auto-rotate hero carousel
 
-    return () => clearInterval(interval);
-  }, [carouselImages.length]);
+  // Auto-rotate How it works images
+  const howItWorksImages = [
+    '/game rules.webp',
+    '/Characters.webp',
+    '/Clues.webp',
+    '/secret reveal.webp',
+    '/Solution.webp',
+    '/choose number of players.webp'
+  ];
+
+  // Manual navigation only for How it works images (auto-rotate disabled)
 
   const handleAddToCart = (game: Game) => {
     addToCart(game.id);
     navigate('/cart'); // Redirect to cart page after adding item
   };
 
-  // Only render price and add to cart button if we have a featured game
-  const renderFeaturedGameActions = () => {
-    if (!featuredGame) return null;
-
-    const isInCart = cartGames.some(game => game.id === featuredGame.id);
-
+  // Render price and cart actions for a given game
+  const renderGameActions = (game: Game | null) => {
+    if (!game) return null;
+    const isInCart = cartGames.some(cartItem => cartItem.id === game.id);
     return (
       <div className="flex items-center justify-between pt-4">
         <span className="text-2xl font-bold">
-          {hasDiscount(featuredGame) ? (
+          {hasDiscount(game) ? (
             <div className="flex flex-col">
-              <span>{formatPrice(getEffectivePrice(featuredGame), language)}</span>
+              <span>{formatPrice(getEffectivePrice(game), language)}</span>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500 line-through">
-                  {formatPrice(featuredGame.price, language)}
+                  {formatPrice(game.price, language)}
                 </span>
                 <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
-                  -{getDiscountPercentage(featuredGame)}%
+                  -{getDiscountPercentage(game)}%
                 </span>
               </div>
             </div>
           ) : (
-            formatPrice(featuredGame.price, language)
+            formatPrice(game.price, language)
           )}
         </span>
         {isInCart ? (
@@ -81,51 +82,79 @@ const HomePage: React.FC = () => {
           </button>
         ) : (
           <button
-            onClick={() => handleAddToCart(featuredGame)}
+            onClick={() => handleAddToCart(game)}
             className="btn-primary flex items-center gap-2"
           >
             <ShoppingCart className="w-5 h-5" />
-            {t('shop.addToCart')}
+            {language === 'bg' ? 'Купи сега' : 'Buy Now'}
           </button>
         )}
       </div>
     );
   };
 
-  
+  const showPrevGame = () => {
+    if (games.length === 0) return;
+    setCurrentGameIndex((prev) => (prev - 1 + games.length) % games.length);
+  };
+
+  const showNextGame = () => {
+    if (games.length === 0) return;
+    setCurrentGameIndex((prev) => (prev + 1) % games.length);
+  };
+
+  // Handle swipe/drag gestures (mobile-friendly)
+  const handleGameDragEnd = (_: unknown, info: { offset: { x: number }, velocity: { x: number } }) => {
+    const swipeThreshold = 50; // pixels
+    const velocityThreshold = 500; // px/s
+    const offsetX = info?.offset?.x ?? 0;
+    const velocityX = info?.velocity?.x ?? 0;
+
+    if (offsetX <= -swipeThreshold || velocityX <= -velocityThreshold) {
+      showNextGame();
+      return;
+    }
+    if (offsetX >= swipeThreshold || velocityX >= velocityThreshold) {
+      showPrevGame();
+    }
+  };
+
+  // Swipe handling for How it works images
+  const handleHowItWorksDragEnd = (_: unknown, info: { offset: { x: number }, velocity: { x: number } }) => {
+    const swipeThreshold = 50;
+    const velocityThreshold = 500;
+    const offsetX = info?.offset?.x ?? 0;
+    const velocityX = info?.velocity?.x ?? 0;
+
+    if (offsetX <= -swipeThreshold || velocityX <= -velocityThreshold) {
+      setHowItWorksSlide((prev) => (prev + 1) % howItWorksImages.length);
+      return;
+    }
+    if (offsetX >= swipeThreshold || velocityX >= velocityThreshold) {
+      setHowItWorksSlide((prev) => (prev - 1 + howItWorksImages.length) % howItWorksImages.length);
+    }
+  };
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Carousel Background */}
+        {/* Hero Background */}
         <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
-              className="absolute inset-0"
-            >
+          <div className="absolute inset-0">
           <picture>
-            <source 
-                  srcSet={carouselImages[currentSlide].src} 
-              type="image/webp" 
-            />
+              <source srcSet={heroImage.src} type="image/webp" />
             <img 
-                  src={carouselImages[currentSlide].fallback}
+                src={heroImage.fallback}
               alt="Hero background"
               className="absolute inset-0 w-full h-full object-cover"
-                  style={{ filter: 'brightness(0.4)' }}
+                style={{ filter: 'brightness(0.7)' }}
               loading="eager"
               fetchPriority="high"
             />
           </picture>
-            </motion.div>
-          </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/60 to-secondary-800/80"></div>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/30 to-secondary-800/50"></div>
         </div>
         
         <div className="container-custom relative z-10 mt-16 md:mt-8">
@@ -139,20 +168,20 @@ const HomePage: React.FC = () => {
           >
 
               {/* Main Headline */}
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight" 
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-8 text-white leading-tight" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
-                {language === 'bg' ? 'Онлайн' : 'Online'} {language === 'bg' ? 'Управлявани' : 'Guided'} <span className="text-yellow-400" 
+                {language === 'bg' ? 'Разкриване на' : ''} <span className="text-yellow-400" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
-                  {language === 'bg' ? 'Мистерии' : 'Murder Mystery'}
-                </span> {language === 'bg' ? 'Игри' : 'Games'}
+                  {language === 'bg' ? 'Мистериозни убийства' : 'Murder Mystery'}
+                </span> {language === 'bg' ? '' : 'Games'}
               </h1>
 
               {/* Subtitle */}
               <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed" 
                  style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
                 {language === 'bg' 
-                  ? 'Перфектно за срещи с приятели! Играйте веднага след покупка - без доставки, без подготовка.'
-                  : 'Perfect for friends gatherings! Play immediately after purchase - no deliveries, no preparations needed.'
+                  ? 'Перфектната игра за събиране с приятели! Онлайн управлявана - достъпна веднага след покупка!'
+                  : 'Perfect for friends gatherings! Online naviagtion, play immediately after purchase!'
                 }
               </p>
 
@@ -291,244 +320,19 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Key Features Section */}
-      <section id="all-about" className="py-16 bg-secondary-50">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-black">
-              {language === 'bg' ? 'Какво Представлява?' : 'What It\'s All About?'}
-            </h2>
-            <div className="w-24 h-1 bg-accent-500 mx-auto mb-6"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                         {/* Feature 1: One Device Controls Everything */}
-             <motion.div 
-               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.1 }}
-             >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/one_phone.webp" type="image/webp" />
-                   <img 
-                     src="/one_phone.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? 'Едно устройство' : 'One Device'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Използвайте един телефон, таблет или компютър, който да ви навигира през цялата игра.' : 'Use any phone, tablet, or computer to guide the entire game. No printing, no setup hassle - just start and play.'}
-                  </p>
-               </div>
-             </motion.div>
-
-                         {/* Feature 2: Perfect for Groups */}
-             <motion.div 
-               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.2 }}
-             >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/groups.webp" type="image/webp" />
-                   <img 
-                     src="/groups.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? '4 - 10 играчи' : '4 to 10 people'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Различни вариации на игрите за компании от 4 до 10 души, събрани на живо.' : 'Designed for 4-10 players gathering in person. Each player gets a unique character with secrets and motives.'}
-                  </p>
-               </div>
-             </motion.div>
-
-                         {/* Feature 3: 2 Hours of Entertainment */}
-             <motion.div 
-               className="text-center p-8 rounded-2xl shadow-lg border border-accent-200 hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5, delay: 0.3 }}
-             >
-               {/* Background Image */}
-               <div className="absolute inset-0 z-0">
-                 <picture>
-                   <source srcSet="/fun.webp" type="image/webp" />
-                   <img 
-                     src="/fun.png"
-                     alt="Feature background"
-                     className="w-full h-full object-cover"
-                     style={{ filter: 'brightness(0.3)' }}
-                   />
-                 </picture>
-                 <div className="absolute inset-0 bg-white/20"></div>
-               </div>
-               
-               {/* Content */}
-               <div className="relative z-10">
-                                   <div className="w-20 h-20 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                                    <h3 className="text-3xl font-display font-bold mb-3 text-accent-400">
-                     {language === 'bg' ? 'Два часа забавление' : '2 Hours of Entertainment'}
-                   </h3>
-                  <p className="text-white leading-relaxed">
-                    {language === 'bg' ? 'Всяка игра осигурява между 1 и 3 часа забавление в решаване на мистерии.' : 'Each game provides between 1 to 3 hours of immersive mystery-solving fun, perfect for dinner parties or game nights.'}
-                  </p>
-               </div>
-             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Game */}
-      {featuredGame && (
-      <section id="featured" className="section bg-secondary-50">
-        <div className="container-custom">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('home.featured.title')}</h2>
-            <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
-            <Link to={`/preview/${featuredGame.game_id}`} className="vintage-border block">
-              <div className="vintage-border-inner">
-                  {loading ? (
-                    <div className="flex items-center justify-center h-full">
-                      <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
-                    </div>
-                  ) : error ? (
-                    <div className="flex items-center justify-center h-full text-secondary-600">
-                      {error}
-                    </div>
-                  ) : featuredGame ? (
-                <motion.img 
-                  src={featuredGame.image} 
-                      alt={language === 'bg' ? featuredGame.title_bg || featuredGame.title : featuredGame.title}
-                  className="w-full h-auto max-h-[450px] object-cover rounded shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                />
-                  ) : null}
-              </div>
-            </Link>
-
-            <motion.div 
-              className="space-y-4"
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-                <Link to={`/preview/${featuredGame.game_id}`} className="block">
-                  <h3 className="font-display text-3xl font-bold hover:text-primary-600 transition-colors cursor-pointer">
-                    {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
-                  </h3>
-                </Link>
-                <p className="text-lg italic text-primary-600">
-                  {language === 'bg' ? featuredGame?.subtitle_bg || featuredGame?.subtitle : featuredGame?.subtitle}
-                </p>
-                <p className="text-secondary-600">
-                  {language === 'bg' ? featuredGame?.description_bg || featuredGame?.description : featuredGame?.description}
-                </p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center">
-                  <Users className="w-5 h-5 text-primary-600 mr-2" />
-                    <span>{language === 'bg' ? featuredGame?.players : featuredGame?.players}</span>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="w-5 h-5 text-primary-600 mr-2" />
-                    <span>{formatDuration(featuredGame?.duration || '', language)}</span>
-                </div>
-                <div className="flex items-center">
-                  <Award className="w-5 h-5 text-primary-600 mr-2" />
-                    <span>
-                      {t('common.difficulty')}{' '}
-                      {language === 'bg' ? featuredGame?.difficulty_bg || featuredGame?.difficulty : featuredGame?.difficulty}
-                    </span>
-                </div>
-              </div>
-              
-                {renderFeaturedGameActions()}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* Alternate CTA after Featured Game */}
-      <section className="py-16 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ 
-              backgroundImage: "url('https://images.pexels.com/photos/301614/pexels-photo-301614.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
-              filter: 'brightness(0.3)'
-            }}
-          ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-secondary-800/90 to-secondary-900/70"></div>
-        </div>
-        <div className="container-custom relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
-              {t('home.altCta.title')}
-            </h2>
-            <Link to="/shop" className="btn-accent text-lg">
-              {t('home.altCta.button')}
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section id="how-it-works" className="section bg-white">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('home.howItWorks.title')}</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{language === 'bg' ? 'Как работи?' : 'How it works?'}</h2>
             <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
             <p className="text-secondary-600 max-w-2xl mx-auto">
               {t('home.howItWorks.subtitle')}
+            </p>
+            <p className="text-secondary-700 max-w-3xl mx-auto mt-4">
+              {language === 'bg'
+                ? 'Уебсайтът ще ви напътства през цялата игра, нужно ви е само едно устройство за достъпване на указанията.'
+                : 'The website will guide you through all the steps in the game using a single device — mobile phone, tablet, computer, or TV.'}
             </p>
           </div>
 
@@ -592,6 +396,158 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* How it works images carousel */}
+      {howItWorksImages.length > 0 && (
+        <div className="mt-10">
+          <div className="container-custom">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{language === 'bg' ? 'Откъси от играта' : 'Game Previews'}</h2>
+              <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
+            </div>
+            {/* iPhone-like frame */}
+            <div className="max-w-sm md:max-w-md lg:max-w-lg mx-auto">
+              <div className="relative mx-auto bg-black rounded-[2rem] shadow-2xl border-4 border-primary-600" style={{ width: '100%', aspectRatio: '9 / 18' }}>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-3 bg-black rounded-b-xl"></div>
+                <div className="absolute inset-[4px] bg-black rounded-[1.6rem] overflow-hidden">
+                  <motion.img 
+                    key={howItWorksSlide}
+                    src={howItWorksImages[howItWorksSlide]}
+                    alt="How it works preview"
+                    className="absolute inset-0 w-full h-full object-contain bg-black cursor-grab active:cursor-grabbing"
+                    loading="lazy"
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={handleHowItWorksDragEnd}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Thumbnails */}
+            <div className="mt-4 flex items-center justify-center gap-3 overflow-x-auto px-2">
+              {howItWorksImages.map((src, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setHowItWorksSlide(idx)}
+                  className={`relative w-20 h-14 rounded-lg overflow-hidden border bg-white transition-all ${idx === howItWorksSlide ? 'ring-2 ring-primary-600' : 'opacity-70 hover:opacity-100'}`}
+                  aria-label={`Preview slide ${idx + 1}`}
+                >
+                  <img src={src} alt={`Slide ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+
+            {/* Dots indicator */}
+            <div className="mt-3 flex justify-center gap-2">
+              {howItWorksImages.map((_, idx) => (
+                <span key={idx} className={`block h-2 rounded-full ${idx === howItWorksSlide ? 'bg-primary-600 w-8' : 'bg-secondary-300 w-2'}`}></span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Available games (carousel) */}
+      {games && games.length > 0 && (
+      <section id="featured" className="section bg-secondary-50">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{language === 'bg' ? 'Налични игри' : 'Available games'}</h2>
+            <div className="w-24 h-1 bg-primary-600 mx-auto mb-6"></div>
+          </div>
+
+          <div className="relative">
+            {/* Carousel body */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
+              {(() => { const game = games[currentGameIndex]; return (
+                <>
+                  <Link to={`/preview/${game.game_id}`} className="vintage-border block">
+                    <div className="vintage-border-inner">
+                      {loading ? (
+                        <div className="flex items-center justify-center h-full">
+                          <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
+                        </div>
+                      ) : error ? (
+                        <div className="flex items-center justify-center h-full text-secondary-600">{error}</div>
+                      ) : (
+                        <motion.img 
+                          src={game.image} 
+                          alt={language === 'bg' ? game.title_bg || game.title : game.title}
+                          className="w-full h-auto max-h-[450px] object-cover rounded shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                          drag="x"
+                          dragConstraints={{ left: 0, right: 0 }}
+                          dragElastic={0.2}
+                          onDragEnd={handleGameDragEnd}
+                        />
+                      )}
+                    </div>
+                  </Link>
+
+                  <motion.div 
+                    className="space-y-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={handleGameDragEnd}
+                  >
+                    <Link to={`/preview/${game.game_id}`} className="block">
+                      <h3 className="font-display text-3xl font-bold hover:text-primary-600 transition-colors cursor-pointer">
+                        {language === 'bg' ? game?.title_bg || game?.title : game?.title}
+                      </h3>
+                    </Link>
+                    <p className="text-lg italic text-primary-600">
+                      {language === 'bg' ? game?.subtitle_bg || game?.subtitle : game?.subtitle}
+                    </p>
+                    <p className="text-secondary-600">
+                      {language === 'bg' ? game?.description_bg || game?.description : game?.description}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex items-center">
+                        <Users className="w-5 h-5 text-primary-600 mr-2" />
+                        <span>{game?.players}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-5 h-5 text-primary-600 mr-2" />
+                        <span>{formatDuration(game?.duration || '', language)}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Award className="w-5 h-5 text-primary-600 mr-2" />
+                        <span>
+                          {t('common.difficulty')}{' '}
+                          {language === 'bg' ? game?.difficulty_bg || game?.difficulty : game?.difficulty}
+                        </span>
+                      </div>
+                    </div>
+
+                    {renderGameActions(game)}
+                  </motion.div>
+                </>
+              ); })()}
+            </div>
+
+            {/* Carousel controls */}
+            {games.length > 1 && (
+              <div className="flex items-center justify-center gap-4 mt-8">
+                <button onClick={showPrevGame} className="btn-secondary px-4 py-2">{"<"}</button>
+                <div className="text-sm text-secondary-600">
+                  {currentGameIndex + 1} / {games.length}
+                </div>
+                <button onClick={showNextGame} className="btn-secondary px-4 py-2">{">"}</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+      )}
 
       {/* Advantages Section */}
       <section className="section bg-white">
