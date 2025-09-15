@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Clock, Award, Loader2, ShoppingCart } from 'lucide-react';
 import { Game } from '../api/games';
 import { useLanguage } from '../context/LanguageContext';
@@ -15,6 +15,14 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { games, loading, error } = useGames();
   const [featuredGame, setFeaturedGame] = useState<Game | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Carousel images for hero background
+  const carouselImages = [
+    { src: '/hero-background.webp', fallback: '/hero-background.png' },
+    { src: '/one_phone.webp', fallback: '/one_phone.png' },
+    { src: '/fun.webp', fallback: '/fun.png' }
+  ];
 
   useEffect(() => {
     document.title = t('home.pageTitle');
@@ -23,6 +31,15 @@ const HomePage: React.FC = () => {
       setFeaturedGame(featured);
     }
   }, [games, loading, t]);
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [carouselImages.length]);
 
   const handleAddToCart = (game: Game) => {
     addToCart(game.id);
@@ -75,64 +92,187 @@ const HomePage: React.FC = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-600" />
-          <p className="text-lg text-gray-600">
-            {language === 'bg' ? 'Зареждане на игри...' : 'Loading games...'}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Carousel Background */}
         <div className="absolute inset-0 z-0">
-          {/* Try both approaches: img tag and CSS background */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="absolute inset-0"
+            >
           <picture>
             <source 
-              srcSet="/hero-background.webp" 
+                  srcSet={carouselImages[currentSlide].src} 
               type="image/webp" 
             />
             <img 
-              src="/hero-background.png"
+                  src={carouselImages[currentSlide].fallback}
               alt="Hero background"
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: 'brightness(1.5)' }}
+                  style={{ filter: 'brightness(0.4)' }}
               loading="eager"
               fetchPriority="high"
             />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/40 to-secondary-800/60 mix-blend-multiply"></div>
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/60 to-secondary-800/80"></div>
         </div>
         
-        <div className="container-custom relative z-10 mt-20 md:mt-0">
+        <div className="container-custom relative z-10 mt-16 md:mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start lg:items-center">
+            {/* Left Column - Hero Content */}
           <motion.div 
-            className="max-w-3xl mx-auto text-center text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+              className="text-center lg:text-left text-white px-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
-                                      <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
-               {t('home.hero.title')} <span className="text-accent-400" style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>{t('home.hero.titleHighlight')}</span> {t('home.hero.titleEnd')}
+
+              {/* Main Headline */}
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight" 
+                  style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
+                {language === 'bg' ? 'Онлайн' : 'Online'} {language === 'bg' ? 'Управлявани' : 'Guided'} <span className="text-yellow-400" 
+                  style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
+                  {language === 'bg' ? 'Мистерии' : 'Murder Mystery'}
+                </span> {language === 'bg' ? 'Игри' : 'Games'}
               </h1>
-                                      <p className="text-lg md:text-xl text-secondary-200 mb-8 leading-relaxed" style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
-               {t('home.hero.subtitle')}
+
+              {/* Subtitle */}
+              <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed" 
+                 style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
+                {language === 'bg' 
+                  ? 'Перфектно за срещи с приятели! Играйте веднага след покупка - без доставки, без подготовка.'
+                  : 'Perfect for friends gatherings! Play immediately after purchase - no deliveries, no preparations needed.'
+                }
               </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/shop" className="btn-accent text-lg" state={{ preventScroll: true }}>
-                {t('home.hero.exploreGames')}
+
+              {/* Key Features Row */}
+              <motion.div 
+                className="flex flex-row justify-center lg:justify-start items-center gap-4 sm:gap-6 mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                {/* One Device */}
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-white font-medium text-sm sm:text-base">
+                    {language === 'bg' ? 'Едно устройство' : 'One Device'}
+                  </span>
+                </div>
+
+                {/* 4-10 Players */}
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" />
+                  <span className="text-white font-medium text-sm sm:text-base">
+                    {language === 'bg' ? '4-10 играчи' : '4-10 Players'}
+                  </span>
+                </div>
+
+                {/* 2 Hours Fun */}
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" />
+                  <span className="text-white font-medium text-sm sm:text-base">
+                    {language === 'bg' ? '2 часа забавление' : '2 Hours Fun'}
+                  </span>
+                </div>
+              </motion.div>
+
+            </motion.div>
+
+            {/* Right Column - Featured Game Card */}
+            {featuredGame && (
+              <motion.div 
+                className="flex justify-center lg:justify-end lg:mt-8"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3, duration: 0.7 }}
+              >
+                <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 lg:mx-0">
+                  {/* Featured Badge */}
+                  <div className="bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-4">
+                    {language === 'bg' ? 'ПРЕДЛОЖЕНА ИГРА' : 'FEATURED GAME'}
+                  </div>
+
+                  {/* Game Image */}
+                  <div className="mb-4">
+                    <Link to={`/preview/${featuredGame.game_id}`} className="block">
+                      <img 
+                        src={featuredGame.image} 
+                        alt={language === 'bg' ? featuredGame.title_bg || featuredGame.title : featuredGame.title}
+                        className="w-full h-48 object-cover rounded-lg shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                      />
+                    </Link>
+                  </div>
+
+                  {/* Game Details */}
+                  <div className="space-y-3">
+                    <Link to={`/preview/${featuredGame.game_id}`} className="block">
+                      <h3 className="font-display text-xl font-bold text-gray-900 hover:text-primary-600 transition-colors cursor-pointer">
+                        {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
+                      </h3>
               </Link>
-              <a href="#all-about" className="btn-outline border-white text-white hover:bg-white/10 text-lg">
-                {t('home.hero.howItWorks')}
-              </a>
+                    
+                    <p className="text-sm text-primary-600 font-medium">
+                      {language === 'bg' ? featuredGame?.subtitle_bg || featuredGame?.subtitle : featuredGame?.subtitle}
+                    </p>
+
+
+                    {/* Price and Buy Button */}
+                    <div className="flex items-center justify-between pt-4">
+                      <div className="text-2xl font-bold text-gray-900">
+                        {hasDiscount(featuredGame) ? (
+                          <div className="flex flex-col">
+                            <span>{formatPrice(getEffectivePrice(featuredGame), language)}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-500 line-through">
+                                {formatPrice(featuredGame.price, language)}
+                              </span>
+                              <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                                -{getDiscountPercentage(featuredGame)}%
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          formatPrice(featuredGame.price, language)
+                        )}
+                      </div>
+                      
+                      {cartGames.some(game => game.id === featuredGame.id) ? (
+                        <button
+                          onClick={() => navigate('/cart')}
+                          className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-300 transform hover:scale-105"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          {t('shop.inCart')}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAddToCart(featuredGame)}
+                          className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-300 transform hover:scale-105"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          {language === 'bg' ? 'Купи сега' : 'Buy Now'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
             </div>
           </motion.div>
+            )}
+          </div>
         </div>
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">
