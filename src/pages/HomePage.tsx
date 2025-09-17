@@ -236,7 +236,7 @@ const HomePage: React.FC = () => {
                   </div>
 
                   {/* Game Image */}
-                  <div className="mb-4">
+                  <div className="relative mb-4">
                     <Link to={`/preview/${featuredGame.game_id}`} className="block">
                       <img 
                         src={featuredGame.image} 
@@ -244,6 +244,11 @@ const HomePage: React.FC = () => {
                         className="w-full h-48 object-cover rounded-lg shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
                       />
                     </Link>
+                    <img 
+                      src="/money back guarantee.png" 
+                      alt={language === 'bg' ? 'Гаранция за връщане на парите' : 'Money Back Guarantee'}
+                      className="absolute -top-16 right-[-1.5rem] drop-shadow-lg pointer-events-none select-none"
+                    />
                   </div>
 
                   {/* Game Details */}
@@ -254,9 +259,7 @@ const HomePage: React.FC = () => {
                       </h3>
               </Link>
                     
-                    <p className="text-sm text-primary-600 font-medium">
-                      {language === 'bg' ? featuredGame?.subtitle_bg || featuredGame?.subtitle : featuredGame?.subtitle}
-                    </p>
+                    
 
 
                     {/* Price and Buy Button */}
