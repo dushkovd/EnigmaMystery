@@ -173,7 +173,7 @@ const HomePage: React.FC = () => {
                 <span className="text-yellow-400" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
                   {language === 'bg' ? 'Мистериозни убийства' : 'Murder Mystery'}
-                </span>
+                </span>{language === 'bg' ? '' : ' Games'}
               </h1>
 
               {/* Subtitle */}
