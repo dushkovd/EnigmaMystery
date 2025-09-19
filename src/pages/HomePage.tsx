@@ -157,18 +157,18 @@ const HomePage: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/30 to-secondary-800/50"></div>
         </div>
         
-        <div className="container-custom relative z-10 mt-16 md:mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start lg:items-center">
+        <div className="container-custom relative z-10 -mt-4 md:-mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start lg:items-center">
             {/* Left Column - Hero Content */}
           <motion.div 
-              className="text-center lg:text-left text-white px-4"
+              className="text-center lg:text-left text-white px-4 pt-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
 
               {/* Main Headline */}
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-8 text-white leading-tight" 
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white leading-tight" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
                 <span className="text-yellow-400" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed" 
+              <p className="text-lg md:text-xl text-white/90 mb-4 leading-relaxed" 
                  style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
                 {language === 'bg' 
                   ? 'Перфектната игра за събиране с приятели! Онлайн управлявана - достъпна веднага след покупка!'
@@ -187,7 +187,7 @@ const HomePage: React.FC = () => {
 
               {/* Key Features Row */}
               <motion.div 
-                className="flex flex-row justify-center lg:justify-start items-center gap-4 sm:gap-6 mb-8"
+                className="flex flex-row justify-center lg:justify-start items-center gap-4 sm:gap-6 mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
@@ -229,14 +229,14 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.7 }}
               >
-                <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 lg:mx-0">
+                <div className="bg-white rounded-2xl shadow-2xl p-4 max-w-sm w-full mx-4 lg:mx-0">
                   {/* Featured Badge */}
-                  <div className="bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-4">
+                  <div className="bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
                     {language === 'bg' ? 'ПРЕДЛОЖЕНА ИГРА' : 'FEATURED GAME'}
                   </div>
 
                   {/* Game Image */}
-                  <div className="relative mb-4">
+                  <div className="relative mb-3">
                     <Link to={`/preview/${featuredGame.game_id}`} className="block">
                       <img 
                         src={featuredGame.image} 
@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
                   </div>
 
                   {/* Game Details */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <Link to={`/preview/${featuredGame.game_id}`} className="block">
                       <h3 className="font-display text-xl font-bold text-gray-900 hover:text-primary-600 transition-colors cursor-pointer">
                         {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
@@ -263,7 +263,7 @@ const HomePage: React.FC = () => {
 
 
                     {/* Price and Buy Button */}
-                    <div className="flex items-center justify-between pt-4">
+                    <div className="flex items-center justify-between pt-2">
                       <div className="text-2xl font-bold text-gray-900">
                         {hasDiscount(featuredGame) ? (
                           <div className="flex flex-col">
