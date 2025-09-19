@@ -168,7 +168,7 @@ const HomePage: React.FC = () => {
           >
 
               {/* Main Headline */}
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white leading-tight" 
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 text-white leading-tight" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
                 <span className="text-yellow-400" 
                   style={{ textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.8), 0 0 120px rgba(0,0,0,0.7)' }}>
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-lg md:text-xl text-white/90 mb-4 leading-relaxed" 
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-4 leading-relaxed" 
                  style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
                 {language === 'bg' 
                   ? 'Перфектната игра за събиране с приятели! Онлайн управлявана - достъпна веднага след покупка!'
@@ -197,7 +197,7 @@ const HomePage: React.FC = () => {
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-white font-medium text-sm sm:text-base">
+                  <span className="text-white font-medium text-xs sm:text-sm md:text-base">
                     {language === 'bg' ? 'Едно устройство' : 'One Device'}
                   </span>
                 </div>
@@ -205,7 +205,7 @@ const HomePage: React.FC = () => {
                 {/* 4-10 Players */}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" />
-                  <span className="text-white font-medium text-sm sm:text-base">
+                  <span className="text-white font-medium text-xs sm:text-sm md:text-base">
                     {language === 'bg' ? '4-10 играчи' : '4-10 Players'}
                   </span>
                 </div>
@@ -213,7 +213,7 @@ const HomePage: React.FC = () => {
                 {/* 2 Hours Fun */}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 flex-shrink-0" />
-                  <span className="text-white font-medium text-sm sm:text-base">
+                  <span className="text-white font-medium text-xs sm:text-sm md:text-base">
                     {language === 'bg' ? '2 часа забавление' : '2 Hours Fun'}
                   </span>
                 </div>
