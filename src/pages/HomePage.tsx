@@ -157,11 +157,11 @@ const HomePage: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-secondary-900/30 to-secondary-800/50"></div>
         </div>
         
-        <div className="container-custom relative z-10 -mt-4 md:-mt-6">
+        <div className="container-custom relative z-10 pt-20 sm:pt-24 md:pt-28 lg:pt-32 xl:pt-36">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start lg:items-center">
             {/* Left Column - Hero Content */}
           <motion.div 
-              className="text-center lg:text-left text-white px-4 pt-4"
+              className="text-center lg:text-left text-white px-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
                   </div>
 
                   {/* Game Details */}
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <Link to={`/preview/${featuredGame.game_id}`} className="block">
                       <h3 className="font-display text-xl font-bold text-gray-900 hover:text-primary-600 transition-colors cursor-pointer">
                         {language === 'bg' ? featuredGame?.title_bg || featuredGame?.title : featuredGame?.title}
@@ -263,7 +263,7 @@ const HomePage: React.FC = () => {
 
 
                     {/* Price and Buy Button */}
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center justify-between pt-1">
                       <div className="text-2xl font-bold text-gray-900">
                         {hasDiscount(featuredGame) ? (
                           <div className="flex flex-col">
