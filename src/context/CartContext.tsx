@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { Game } from '../api/games';
 import { useGames } from './GameContext';
 import { getEffectivePrice } from '../utils/currencyFormatter';
+import { trackUserInteraction, trackGameEvent } from '../utils/analytics';
 
 // Track AddToCart event with Meta Pixel
 const trackAddToCart = (value: number, currency: string, contentIds: string[]) => {
@@ -104,6 +105,17 @@ export function CartProvider({ children }: CartProviderProps) {
     if (game) {
       const price = getEffectivePrice(game);
       trackAddToCart(price, 'USD', [gameId]);
+      
+      // Track with Clarity
+      trackUserInteraction('add_to_cart', 'game_card', {
+        game_id: gameId,
+        game_title: game.title,
+        price: price
+      });
+      trackGameEvent(parseInt(gameId), 'added_to_cart', {
+        price: price,
+        game_title: game.title
+      });
     }
   };
 
@@ -120,6 +132,18 @@ export function CartProvider({ children }: CartProviderProps) {
         return prevItems.filter(item => item.gameId !== gameId);
       }
     });
+    
+    // Track remove from cart with Clarity
+    const game = games.find(g => g.id === gameId);
+    if (game) {
+      trackUserInteraction('remove_from_cart', 'cart_item', {
+        game_id: gameId,
+        game_title: game.title
+      });
+      trackGameEvent(parseInt(gameId), 'removed_from_cart', {
+        game_title: game.title
+      });
+    }
   };
 
   const clearCart = () => {

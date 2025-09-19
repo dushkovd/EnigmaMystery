@@ -4,6 +4,7 @@
 declare global {
   interface Window {
     clarity: any;
+    fbq: any;
   }
 }
 
@@ -59,4 +60,24 @@ export const trackPerformance = (metric: string, value: number) => {
 // User engagement tracking
 export const trackEngagement = (action: string, duration?: number) => {
   trackClarityEvent('engagement', { action, duration });
+};
+
+// Enhanced page view tracking
+export const trackPageViewEnhanced = (pageName: string) => {
+  trackClarityEvent('page_view', { 
+    page: pageName,
+    timestamp: new Date().toISOString(),
+    url: typeof window !== 'undefined' ? window.location.href : ''
+  });
+};
+
+// Track user interactions with more context
+export const trackUserInteraction = (action: string, element?: string, details?: any) => {
+  trackClarityEvent('user_interaction', { 
+    action, 
+    element,
+    page: typeof window !== 'undefined' ? window.location.pathname : '',
+    timestamp: new Date().toISOString(),
+    ...details 
+  });
 }; 

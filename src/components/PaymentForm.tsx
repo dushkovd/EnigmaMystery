@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { formatPrice, getStripeCurrencyCode, CURRENCY_CONFIG, getEffectivePrice } from '../utils/currencyFormatter';
+import { trackUserInteraction, trackPurchase as trackClarityPurchase } from '../utils/analytics';
 
 // Track purchase event with Meta Pixel
 const trackPurchase = (value: number, currency: string, contentIds: string[]) => {
@@ -144,6 +145,15 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({ gameId, gameTitle, gam
         // Track purchase event with Meta Pixel
         const purchaseAmount = getEffectivePrice(game) * CURRENCY_CONFIG[language === 'bg' ? 'BGN' : 'EUR'].rate;
         trackPurchase(purchaseAmount, getStripeCurrencyCode(language), [gameId]);
+        
+        // Track purchase with Clarity
+        trackUserInteraction('purchase_completed', 'payment_form', {
+          game_id: gameId,
+          game_title: gameTitle,
+          amount: purchaseAmount,
+          currency: getStripeCurrencyCode(language)
+        });
+        trackClarityPurchase(parseInt(gameId), purchaseAmount, getStripeCurrencyCode(language));
         
         // Show success message and redirect immediately
         setSuccess(true);
