@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
@@ -17,15 +17,15 @@ import { LanguageProvider } from './context/LanguageContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { GameProvider } from './context/GameContext';
 import ScrollToTop from './components/layout/ScrollToTop';
-import { trackPageView } from './utils/analytics';
+import { trackPageViewEnhanced } from './utils/analytics';
 
 function AppContent() {
   const location = useLocation();
 
   useEffect(() => {
-    // Track page views
+    // Track page views with enhanced tracking
     const pageName = location.pathname || '/';
-    trackPageView(pageName);
+    trackPageViewEnhanced(pageName);
   }, [location]);
 
   return (
