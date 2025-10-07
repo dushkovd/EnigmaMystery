@@ -32,15 +32,24 @@ const HomePage: React.FC = () => {
 
   // Removed auto-rotate hero carousel
 
-  // Auto-rotate How it works images
-  const howItWorksImages = [
-    '/game rules.webp',
-    '/Characters.webp',
-    '/Clues.webp',
-    '/secret reveal.webp',
-    '/Solution.webp',
-    '/choose number of players.webp'
-  ];
+  // Auto-rotate How it works / Game Previews images
+  const howItWorksImages = language === 'en'
+    ? [
+      '/enigma_murder_mystery_screenshot1_en.png',
+      '/enigma_murder_mystery_screenshot2_en.png',
+      '/enigma_murder_mystery_screenshot3_en.png',
+      '/enigma_murder_mystery_screenshot4_en.png',
+      '/enigma_murder_mystery_screenshot5_en.png',
+      '/enigma_murder_mystery_screenshot6_en.png'
+    ]
+    : [
+      '/game rules.webp',
+      '/Characters.webp',
+      '/Clues.webp',
+      '/secret reveal.webp',
+      '/Solution.webp',
+      '/choose number of players.webp'
+    ];
 
   // Manual navigation only for How it works images (auto-rotate disabled)
 
@@ -181,7 +190,7 @@ const HomePage: React.FC = () => {
                  style={{ textShadow: '0 0 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 0 90px rgba(0,0,0,0.7)' }}>
                 {language === 'bg' 
                   ? 'Перфектната игра за събиране с приятели! Онлайн управлявана - достъпна веднага след покупка!'
-                  : 'Perfect for friends gatherings! Online naviagtion, play immediately after purchase!'
+                  : 'Perfect for friends gatherings! Online navigation, play immediately after purchase!'
                 }
               </p>
 
@@ -794,7 +803,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-secondary-600">
-                  "Our book club decided to try something different, and the 'Death at Rosewood Estate' game was perfect! Easy to set up, and everyone got into character. We're already planning our next mystery night!"
+                  "Our book club decided to try something different, and the 'Murder on the Orient Express' game was perfect! Easy to set up, and everyone got into character. We're already planning our next mystery night!"
                 </p>
               </motion.div>
 
@@ -824,7 +833,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-secondary-600">
-                  "I hosted 'Murder on the Midnight Express' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
+                  "I hosted 'Turbulence' for my birthday, and it was a hit! The clues were challenging but fair, and the solution surprised everyone. Worth every penny for a memorable evening!"
                 </p>
               </motion.div>
 
@@ -854,7 +863,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-secondary-600">
-                  "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Death at Rosewood Estate' was our favorite so far!"
+                  "These games have become a monthly tradition with our friends. The storytelling is excellent, and the digital format makes hosting so much easier. 'Murder on the Orient Express' was our favorite so far!"
                 </p>
               </motion.div>
             </div>
